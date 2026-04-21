@@ -96,18 +96,22 @@ class PlayerController(Entity):
                 traverse_target=scene,
             )
             if hit.hit:
-                if (self.cheats.get("no_clip")):
-                    if axis == 'x':
-                        wall_limit = self.maze_3d.x * self.maze_3d.scale
-                        if 0 <= self.position.x < wall_limit:
-                            return False
-                    elif axis == 'z':
-                        wall_limit = -self.maze_3d.y * self.maze_3d.scale
-                        if wall_limit < self.position.z <= 0:
-                            return False
+                if self._handle_noclip(axis):
+                    return False
                 return True
 
         return False
+    
+    def _handle_noclip(self, axis):
+        if (self.cheats.get("no_clip")):
+            if axis == 'x':
+                wall_limit = self.maze_3d.x * self.maze_3d.scale
+                if 0 <= self.position.x <= wall_limit:
+                    return True
+            elif axis == 'z':
+                wall_limit = -self.maze_3d.y * self.maze_3d.scale
+                if wall_limit <= self.position.z <= 0:
+                    return True
 
     def _move_axis(self, axis, delta):
         if self._axis_blocked(axis, delta):

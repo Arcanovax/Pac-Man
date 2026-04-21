@@ -36,7 +36,7 @@ class MazeGameSession(Entity):
 =======
         self._destroyables: list[Entity] = []
         self.cheats = {
-            "no_clip":True
+            "no_clip":False
         }
 >>>>>>> dc40e28 (cheat)
 
