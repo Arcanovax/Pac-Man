@@ -26,6 +26,8 @@ class PlayerController(Entity):
         skin_width=0.04,
         mini_map=None,
         pacgums=None
+        mini_map=None,
+        pacgums=None
     ):
         super().__init__()
         self.speed = speed
@@ -37,10 +39,12 @@ class PlayerController(Entity):
         self.skin_width = skin_width
         self.mini_map = mini_map
         self.pacgums = pacgums
+        self.mini_map = mini_map
+        self.pacgums = pacgums
         self._breath_t = 0.0
         self._base_camera_y = self.eye_height
         self._current_breath_offset = 0.0
-        self.position = mini_map.player_spawn
+        self.position = position
 
         self.camera_pivot = Entity(parent=self, y=self.eye_height)
         camera.parent = self.camera_pivot
