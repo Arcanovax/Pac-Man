@@ -36,8 +36,7 @@ class MazeGameSession(Entity):
 =======
         self._destroyables: list[Entity] = []
         self.cheats = {
-            "no_clip": False,
-            "speed": False
+            "no_clip":True
         }
 >>>>>>> dc40e28 (cheat)
 
@@ -67,7 +66,6 @@ class MazeGameSession(Entity):
         self.maze_3d = Maze_3d(maze, scale_maze)
 
         self.mini_map = MiniMap(self.maze_3d, size, 0.4)
-        self._destroyables.append(self.mini_map)
 
         self.pacgums = Pacgums_Manager(
             scale_maze,

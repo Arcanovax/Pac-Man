@@ -33,7 +33,6 @@ class PlayerController(Entity):
         pacgums=None,
         cheats={},
         maze_3d=None
-
     ):
         super().__init__()
         self.speed = speed
@@ -78,7 +77,11 @@ class PlayerController(Entity):
     def _axis_blocked(self, axis, delta):
         if abs(delta) < 0.0001:
             return False
-
+        if (self.cheats.get("no_clip") and
+            getattr(self.position, axis) <= self.maze_3d.x*self.maze_3d.scale and
+            getattr(self.position, axis) >= 0
+            ):
+            return False
         direction = Vec3(1, 0, 0) if axis == 'x' else Vec3(0, 0, 1)
         if delta < 0:
             direction = -direction
