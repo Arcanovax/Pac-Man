@@ -61,7 +61,7 @@ class MazeGameSession(Entity):
         for floor in self.maze_3d.floors:
             self._destroyables.append(floor)
 
-        self.mini_map = MiniMap(self.maze_3d.walls, size, 0.4)
+        self.mini_map = MiniMap(self.maze_3d, size, 0.4)
         self._destroyables.append(self.mini_map)
 
         self.pacgums = Pacgums_Manager(
@@ -79,7 +79,6 @@ class MazeGameSession(Entity):
         )
 
         self.player = PlayerController(
-            position=self.maze_3d.player_spawn,
             speed=10,
             collider_size=Vec3(0.34, 2, 0.34),
             eye_height=2.0,

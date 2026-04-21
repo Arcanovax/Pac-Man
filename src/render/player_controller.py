@@ -44,7 +44,7 @@ class PlayerController(Entity):
         self._breath_t = 0.0
         self._base_camera_y = self.eye_height
         self._current_breath_offset = 0.0
-        self.position = position
+        self.position = mini_map.player_spawn
 
         self.camera_pivot = Entity(parent=self, y=self.eye_height)
         camera.parent = self.camera_pivot
