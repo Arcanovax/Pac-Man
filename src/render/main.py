@@ -36,7 +36,8 @@ class MazeGameSession(Entity):
 =======
         self._destroyables: list[Entity] = []
         self.cheats = {
-            "no_clip":False
+            "no_clip": False,
+            "speed": False
         }
 >>>>>>> dc40e28 (cheat)
 
@@ -84,8 +85,8 @@ class MazeGameSession(Entity):
         self._super_left = sum(
             1 for gum in self.pacgums.pacgums.get("super", []) if gum.visible
         )
-        
-        
+
+
 
         self.player = PlayerController(
             speed=10,
@@ -120,7 +121,6 @@ class MazeGameSession(Entity):
 
     def _freeze_gameplay(self) -> None:
         self.player.enabled = False
-        # self.input_handler.enabled = False
         self.hud.countdown = False
 
     def _sync_score(self) -> None:

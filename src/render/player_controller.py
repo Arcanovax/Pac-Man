@@ -33,8 +33,7 @@ class PlayerController(Entity):
         pacgums=None,
         cheats={},
         maze_3d=None
-        
->>>>>>> dc40e28 (cheat)
+
     ):
         super().__init__()
         self.speed = speed
@@ -58,6 +57,8 @@ class PlayerController(Entity):
         self._current_breath_offset = 0.0
         self.position = mini_map.player_spawn
 
+        self._handle_speed_cheat()
+
         self.camera_pivot = Entity(parent=self, y=self.eye_height)
         camera.parent = self.camera_pivot
         camera.position = Vec3(0, 0, 0)
@@ -70,10 +71,14 @@ class PlayerController(Entity):
             size=self.collider_size,
         )
 
+    def _handle_speed_cheat(self):
+        if (self.cheats.get("speed")):
+            self.speed = 20
+
     def _axis_blocked(self, axis, delta):
         if abs(delta) < 0.0001:
             return False
-        
+
         direction = Vec3(1, 0, 0) if axis == 'x' else Vec3(0, 0, 1)
         if delta < 0:
             direction = -direction
@@ -101,7 +106,7 @@ class PlayerController(Entity):
                 return True
 
         return False
-    
+
     def _handle_noclip(self, axis):
         if (self.cheats.get("no_clip")):
             if axis == 'x':
