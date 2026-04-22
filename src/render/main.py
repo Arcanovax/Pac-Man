@@ -65,11 +65,8 @@ class MazeGameSession(Entity):
 
         scale_maze = 4
         self.maze_3d = Maze_3d(maze, scale_maze)
-        self._destroyables.append(self.maze_3d.walls)
-        for floor in self.maze_3d.floors:
-            self._destroyables.append(floor)
 
-        self.mini_map = MiniMap(self.maze_3d, 0.4)
+        self.mini_map = MiniMap(self.maze_3d, size, 0.4)
         self._destroyables.append(self.mini_map)
 
         self.pacgums = Pacgums_Manager(
@@ -98,7 +95,6 @@ class MazeGameSession(Entity):
             cheats=self.cheats,
             maze_3d=self.maze_3d
         )
-        self._destroyables.append(self.player)
 
     def _build_hud(self) -> None:
         self.hud = HUDTemplate(
@@ -121,6 +117,7 @@ class MazeGameSession(Entity):
 
     def _freeze_gameplay(self) -> None:
         self.player.enabled = False
+        self.input_handler.enabled = False
         self.hud.countdown = False
 
     def _sync_score(self) -> None:
