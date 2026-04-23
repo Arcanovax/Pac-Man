@@ -27,6 +27,14 @@ class Cheat_menu():
             z=-0.1,
             font=font_path,
         )
+        
+    def show(self):
+        self.menu.enabled = True
+        mouse.locked = False
+        
+    def hide(self):
+        self.menu.enabled = False
+        mouse.locked = True
 
     def add_cheat(self, name, i, is_cursor):
         self.__cheats.append(name)
