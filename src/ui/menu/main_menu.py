@@ -5,10 +5,7 @@ from ursina import (
     color as colors,
     destroy,
     window,
-    scene
 )
-
-import functools
 
 from ...logger import Logger
 from ...render.main import run_main_maze
@@ -53,11 +50,27 @@ def _build_menu_ui(app: Ursina, config) -> None:
     overlay = OverlayMenuManager(menu_buttons)
     game_session = None
 
+    def _set_menu_visible(visible: bool) -> None:
+        for entity in menu_entities:
+            entity.enabled = visible
+            entity.visible = visible
+
+        for button in menu_buttons:
+            button.enabled = visible
+            button.visible = visible
+
+    def _back_to_menu() -> None:
+        nonlocal game_session
+        if game_session is not None:
+            game_session.close()
+            game_session = None
+        _set_menu_visible(True)
+
     def _on_game_over(final_score: int) -> None:
         show_game_over_screen(
             final_score=final_score,
             highscore=highscore,
-            on_close=functools.partial(_build_menu_ui, app, config),
+            on_close=_back_to_menu,
             highscore_filename=highscore_filename,
         )
 
@@ -65,7 +78,7 @@ def _build_menu_ui(app: Ursina, config) -> None:
         show_victory_screen(
             final_score=final_score,
             highscore=highscore,
-            on_close=functools.partial(_build_menu_ui, app, config),
+            on_close=_back_to_menu,
             highscore_filename=highscore_filename,
         )
 
@@ -76,9 +89,7 @@ def _build_menu_ui(app: Ursina, config) -> None:
             return
 
         overlay.clear()
-        for entity in scene.entities:
-            if entity not in (camera, camera.ui):
-                destroy(entity)
+        _set_menu_visible(False)
         Logger.debug("Start game clicked from main menu")
         game_session = run_main_maze(
             config=config,
