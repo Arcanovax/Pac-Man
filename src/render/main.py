@@ -18,7 +18,7 @@ from .player_controller import PlayerController
 from .pacgums import Pacgums_Manager
 from ..ui.menu.hud import HUDTemplate
 from ..ui.menu.cheat_menu import Cheat_menu
-
+from ..ui.menu.cheat_menu import Cheat
 
 class MazeGameSession(Entity):
     def __init__(
@@ -36,9 +36,11 @@ class MazeGameSession(Entity):
 <<<<<<< HEAD
 =======
         self._destroyables: list[Entity] = []
-        self.cheats = {
-            "no_clip":True
-        }
+        self.cheats = [
+            Cheat("no_clip", False, is_cursor=False),
+            Cheat("speed", False, is_cursor=True)
+        ]
+
         self._show_cheats = False
 
         self._build_world()
@@ -82,7 +84,10 @@ class MazeGameSession(Entity):
             1 for gum in self.pacgums.pacgums.get("super", []) if gum.visible
         )
 
-
+        self.cheats_menu = Cheat_menu()
+        for i, cheat in enumerate(self.cheats):
+            self.cheats_menu.add_cheat(cheat, i)
+        self.cheats_menu.hide()
 
         self.player = PlayerController(
             speed=10,
@@ -91,48 +96,19 @@ class MazeGameSession(Entity):
             fov=90,
             mini_map=self.mini_map,
             pacgums=self.pacgums.pacgums,
-            cheats=self.cheats,
+            cheats_menu = self.cheats_menu,
             maze_3d=self.maze_3d
         )
 
-        self.cheat = Cheat_menu()
-        for i, cheat in enumerate(self.cheats.keys()):
-            self.cheat.add_cheat(cheat, i, False)
-        self.cheat.hide()
+
 
     def _toogle_cheat_menu(self):
         if self._show_cheats:
             self._show_cheats = False
-            self.cheat.hide()
+            self.cheats_menu.hide()
         else:
             self._show_cheats = True
-            self.cheat.show()
-
-        self.cheat = Cheat_menu()
-        for i, cheat in enumerate(self.cheats.keys()):
-            self.cheat.add_cheat(cheat, i, False)
-        self.cheat.hide()
-
-    def _toogle_cheat_menu(self):
-        if self._show_cheats:
-            self._show_cheats = False
-            self.cheat.hide()
-        else:
-            self._show_cheats = True
-            self.cheat.show()
-
-        self.cheat = Cheat_menu()
-        for i, cheat in enumerate(self.cheats.keys()):
-            self.cheat.add_cheat(cheat, i, False)
-        self.cheat.hide()
-
-    def _toogle_cheat_menu(self):
-        if self._show_cheats:
-            self._show_cheats = False
-            self.cheat.hide()
-        else:
-            self._show_cheats = True
-            self.cheat.show()
+            self.cheats_menu.show()
 
     def _build_hud(self) -> None:
         self.hud = HUDTemplate(
@@ -192,8 +168,6 @@ class MazeGameSession(Entity):
         self._sync_score()
 
 
-
-
     def close(self) -> None:
         mouse.locked = False
 
@@ -209,6 +183,7 @@ class MazeGameSession(Entity):
                 destroy(entity)
 
         destroy(self)
+
 
     def input(self, key):
         if key=="f1":

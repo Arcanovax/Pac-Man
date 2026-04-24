@@ -8,6 +8,23 @@ from ursina import *
 
 font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
+
+
+class Cheat():
+    def __init__(self, name, state, is_cursor):
+        self.name = name
+        self.state = state
+        self.is_cursor = is_cursor
+
+    def display(self, parent, i):
+        if not self.is_cursor:
+            checkbox_cheat(parent, self.name, i, self.change_state)
+        else:
+            slider_cheat(parent, self.name, i, self.change_state)
+
+    def change_state(self, state):
+        self.state = state
+
 class Cheat_menu():
     def __init__(self):
         self.__cheats = []
@@ -27,34 +44,42 @@ class Cheat_menu():
             z=-0.1,
             font=font_path,
         )
-        
+
     def show(self):
         self.menu.enabled = True
         mouse.locked = False
-        
+
     def hide(self):
         self.menu.enabled = False
         mouse.locked = True
 
-    def add_cheat(self, name, i, is_cursor):
-        self.__cheats.append(name)
-        if not is_cursor:
-            checkbox_cheat(self.menu, name, i)
-        else:
-            slider_cheat(self.menu, name, i)
+    def add_cheat(self, cheat: Cheat, i):
+        self.__cheats.append(cheat)
+        cheat.display(self.menu, i)
+
+    def get_cheat(self, name: str):
+        for cheat in self.__cheats:
+            if cheat.name == name:
+                return cheat
+        return None
+
+
 
 class slider_cheat(Slider):
-    def __init__(self, parent, name, i):
+    def __init__(self, parent, name, i, _change_state):
+        self._change_state = _change_state
+        self.last_value = None
+
         super().__init__(
             parent=parent,
             x=0.1,
             y = 0 - i*-0.075,
-            min=0.5,
-            max=3,
+            min=5,
+            max=50,
             z=-0.1,
-            default=1,
+            default=10,
             bar_color=color.white,
-            step=0.25,
+            step=5,
             scale=0.6,
             )
 
@@ -73,11 +98,17 @@ class slider_cheat(Slider):
         self.knob.color = color.white
         self.knob.scale = 2
 
-
+    def update(self):
+        super().update()
+        if self.value == self.last_value:
+            return
+        self._change_state(self.value)
+        self.last_value = self.value
 
 
 class checkbox_cheat(Button):
-    def __init__(self, parent, name, i):
+    def __init__(self, parent, name, i, _change_state):
+        self._change_state = _change_state
         super().__init__(
             parent=parent,
             scale=(0.03, 0.03),
@@ -112,23 +143,12 @@ class checkbox_cheat(Button):
 
     def on_click(self):
         self.activated = not self.activated
+        self._change_state(self.activated)
         self.indicator.color = color.red if self.activated else color.black
 
 if __name__ == "__main__":
 
     app = Ursina()
-    window.color = color.white
-    window.fps_counter.enabled = False
-    cheats_list = [
-        ("no_clip", False),
-        ("speed", True),
-        ("no_clip", False),
-        ("speed", True),
-        ("invisible", False)
-    ]
-    cheat = Cheat_menu()
-    for i, (name, is_cursor) in enumerate(cheats_list):
-        cheat.add_cheat(name, i, is_cursor)
     app.run()
 
 

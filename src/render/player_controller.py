@@ -31,7 +31,7 @@ class PlayerController(Entity):
         pacgums=None
 =======
         pacgums=None,
-        cheats={},
+        cheats_menu=None,
         maze_3d=None
     ):
         super().__init__()
@@ -44,20 +44,13 @@ class PlayerController(Entity):
         self.skin_width = skin_width
         self.mini_map = mini_map
         self.pacgums = pacgums
-<<<<<<< HEAD
-        self.mini_map = mini_map
-        self.pacgums = pacgums
-=======
-        self.cheats = cheats
+        self.cheats_menu = cheats_menu
         self.maze_3d = maze_3d
 >>>>>>> dc40e28 (cheat)
         self._breath_t = 0.0
         self._base_camera_y = self.eye_height
         self._current_breath_offset = 0.0
         self.position = mini_map.player_spawn
-
-        self._handle_speed_cheat()
-
         self.camera_pivot = Entity(parent=self, y=self.eye_height)
         camera.parent = self.camera_pivot
         camera.position = Vec3(0, 0, 0)
@@ -71,17 +64,13 @@ class PlayerController(Entity):
         )
 
     def _handle_speed_cheat(self):
-        if (self.cheats.get("speed")):
-            self.speed = 20
+        if (self.cheats_menu.get_cheat("speed").state):
+            self.speed = self.cheats_menu.get_cheat("speed").state
 
     def _axis_blocked(self, axis, delta):
         if abs(delta) < 0.0001:
             return False
-        if (self.cheats.get("no_clip") and
-            getattr(self.position, axis) <= self.maze_3d.x*self.maze_3d.scale and
-            getattr(self.position, axis) >= 0
-            ):
-            return False
+
         direction = Vec3(1, 0, 0) if axis == 'x' else Vec3(0, 0, 1)
         if delta < 0:
             direction = -direction
@@ -111,7 +100,7 @@ class PlayerController(Entity):
         return False
 
     def _handle_noclip(self, axis):
-        if (self.cheats.get("no_clip")):
+        if (self.cheats_menu.get_cheat("no_clip").state):
             if axis == 'x':
                 wall_limit = self.maze_3d.x * self.maze_3d.scale
                 if 0 <= self.position.x <= wall_limit:
@@ -126,10 +115,15 @@ class PlayerController(Entity):
             return
         setattr(self, axis, getattr(self, axis) + delta)
 
-    def update(self):
+    def _rotate_camera(self):
+        if self.cheats_menu.menu.enabled is True:
+            return
         self.rotation_y += mouse.velocity[0] * self.mouse_sensitivity[0]
         self.camera_pivot.rotation_x -= mouse.velocity[1] * self.mouse_sensitivity[1]
         self.camera_pivot.rotation_x = clamp(self.camera_pivot.rotation_x, -89, 89)
+
+    def update(self):
+        self._rotate_camera()
 
         move_input = Vec3(
             held_keys['d'] - held_keys['a'],
@@ -139,12 +133,14 @@ class PlayerController(Entity):
         is_moving = move_input != Vec3(0, 0, 0)
 
         if is_moving:
+            self._handle_speed_cheat()
             move_input = move_input.normalized() * self.speed * time.dt
             world_move = (self.right * move_input.x) + (self.forward * move_input.z)
 
             self._move_axis('x', world_move.x)
             self._move_axis('z', world_move.z)
             self._minimap_move_player()
+
 
         self._minimap_rotate_player()
         self._handle_pacgums_collisions()
