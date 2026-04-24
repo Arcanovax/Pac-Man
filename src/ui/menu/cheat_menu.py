@@ -11,9 +11,9 @@ font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
 
 class Cheat():
-    def __init__(self, name, state, is_cursor):
+    def __init__(self, name, is_cursor=False):
         self.name = name
-        self.state = state
+        self.state = False
         self.is_cursor = is_cursor
 
     def display(self, parent, i):

@@ -1,4 +1,4 @@
-from ursina import Entity, Vec3, color
+from ursina import Entity, Vec3, color, Mesh
 from random import shuffle
 from enum import Enum
 
@@ -53,6 +53,7 @@ class Pacgum:
             self.model_scale = 2
         self.gen_on_game()
         self.gen_on_minimap()
+
 
     def gen_on_game(self):
         self.model = Entity(

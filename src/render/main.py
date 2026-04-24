@@ -37,8 +37,9 @@ class MazeGameSession(Entity):
 =======
         self._destroyables: list[Entity] = []
         self.cheats = [
-            Cheat("no_clip", False, is_cursor=False),
-            Cheat("speed", False, is_cursor=True)
+            Cheat("no_clip"),
+            Cheat("speed", is_cursor=True),
+            Cheat("wallhack")
         ]
 
         self._show_cheats = False
@@ -96,11 +97,9 @@ class MazeGameSession(Entity):
             fov=90,
             mini_map=self.mini_map,
             pacgums=self.pacgums.pacgums,
-            cheats_menu = self.cheats_menu,
+            cheats_menu=self.cheats_menu,
             maze_3d=self.maze_3d
         )
-
-
 
     def _toogle_cheat_menu(self):
         if self._show_cheats:

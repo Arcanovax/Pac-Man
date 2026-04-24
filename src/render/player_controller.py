@@ -12,6 +12,7 @@ from ursina import (
     raycast,
     scene,
     time,
+    color
 )
 
 
@@ -146,8 +147,17 @@ class PlayerController(Entity):
         self._handle_pacgums_collisions()
         self._apply_breathing(is_moving)
 
+    def _handle_wallhack(self, model):
+        is_actif = self.cheats_menu.get_cheat("wallhack").state
+        model.always_on_top = is_actif
+        if is_actif:
+            model.color = color.red
+        else:
+            model.color = color.white
+
     def _handle_pacgums_collisions(self):
         for gum in self.pacgums.get('normal'):
+            self._handle_wallhack(gum.model)
             gum_pos = gum.model.position
             if (self.position.x <= gum_pos.x + 1 and
                self.position.x >= gum_pos.x - 1 and
@@ -157,6 +167,7 @@ class PlayerController(Entity):
 
         for gum in self.pacgums.get('super'):
             gum_pos = gum.model.position
+            self._handle_wallhack(gum.model)
             if (self.position.x <= gum_pos.x + 2 and
                self.position.x >= gum_pos.x - 2 and
                self.position.z <= gum_pos.z + 2 and
