@@ -126,6 +126,7 @@ class MazeGameSession(Entity):
         if self.ended:
             return
         self.ended = True
+        self.cheats_menu.hide()
         self._freeze_gameplay()
         mouse.locked = False
         if self.on_game_over is not None:
@@ -202,7 +203,7 @@ class MazeGameSession(Entity):
 
 
     def input(self, key):
-        if key=="f1":
+        if key=="escape":
            self._toogle_cheat_menu()
 
 

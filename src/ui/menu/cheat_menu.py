@@ -21,7 +21,7 @@ class Cheat():
         if self.is_cursor:
             slider_cheat(parent, self.name, i, self.change_state)
         elif self.is_button:
-            button_cheat(parent, self.name, i, self.change_state)
+            button_cheat(parent, self.name, i, self.change_state, text='+')
         else:
             checkbox_cheat(parent, self.name, i, self.change_state)
 
@@ -72,11 +72,13 @@ class slider_cheat(Slider):
     def __init__(self, parent, name, i, _change_state):
         self._change_state = _change_state
         self.last_value = None
+        self.pos_x = 0.4
+        self.pos_y = 0 - i*-0.075
 
         super().__init__(
             parent=parent,
             x=0.1,
-            y = 0 - i*-0.075,
+            y = self.pos_y,
             min=5,
             max=50,
             z=-0.1,
@@ -91,13 +93,13 @@ class slider_cheat(Slider):
             parent=parent,
             scale=1,
             color=color.red,
-            origin=(-0.5,0),
-            x = -0.4,
-            y = 0 - i*-0.075,
+            origin=(-0.5, 0),
+            x=-self.pos_x,
+            y=self.pos_y,
             z=-0.1,
             font=font_path
         )
-        self.bg.color=color.red
+        self.bg.color = color.red
         self.knob.color = color.white
         self.knob.scale = 2
 
@@ -111,15 +113,18 @@ class slider_cheat(Slider):
 
 
 class button_cheat(Button):
-    def __init__(self, parent, name, i, _change_state):
+    def __init__(self, parent, name, i, _change_state, text=None):
         self._change_state = _change_state
-        self.state = 0
+        self.state = False
+        self.pos_x = 0.4
+        self.pos_y = 0 - i*-0.075
+        self.text_button = text
         super().__init__(
             parent=parent,
             scale=(0.03, 0.03),
-            x=0.4,
-            y=0 - i*-0.075,
-            color=color.white,
+            x=self.pos_x,
+            y=self.pos_y,
+            color=color.red,
             model='quad',
             z=-0.1,
         )
@@ -129,20 +134,20 @@ class button_cheat(Button):
             scale=1,
             color=color.red,
             origin=(-0.5, 0),
-            x=-0.4,
-            y=0-i*-0.075,
+            x=-self.pos_x,
+            y=self.pos_y,
             z=-0.1,
             font=font_path
         )
-        self.indicator = Entity(
-            parent=parent,
-            model='quad',
-            scale=0.025,
-            color=color.red,
-            x=0.4,
-            y=0 - i*-0.075,
-            z=-0.2
+        self.text_button = Text(
+            parent=self,
+            text=self.text_button,
+            color=color.black,
+            z=-0.2,
+            scale=60,
+            origin=(0.05, 0.05),
         )
+
 
     def on_click(self):
         self._change_state(True)
@@ -151,11 +156,13 @@ class button_cheat(Button):
 class checkbox_cheat(Button):
     def __init__(self, parent, name, i, _change_state):
         self._change_state = _change_state
+        self.pos_x = 0.4
+        self.pos_y = 0 - i*-0.075
         super().__init__(
             parent=parent,
             scale=(0.03, 0.03),
-            x=0.4,
-            y = 0 - i*-0.075,
+            x=self.pos_x,
+            y=self.pos_y,
             color=color.white,
             model='quad',
             z=-0.1,
@@ -166,8 +173,8 @@ class checkbox_cheat(Button):
             scale=1,
             color=color.red,
             origin=(-0.5,0),
-            x = -0.4,
-            y = 0 - i*-0.075,
+            x=-self.pos_x,
+            y=self.pos_y,
             z=-0.1,
             font=font_path
         )
@@ -177,8 +184,8 @@ class checkbox_cheat(Button):
             model='quad',
             scale=0.025,
             color=color.black,
-            x = 0.4,
-            y = 0 - i*-0.075,
+            x=self.pos_x,
+            y=self.pos_y,
             z=-0.2
         )
 
