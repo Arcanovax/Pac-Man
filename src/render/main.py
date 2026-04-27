@@ -17,7 +17,14 @@ from .maze_3d import Maze_3d
 from .minimap import MiniMap
 from .player_controller import PlayerController
 from .pacgums import Pacgums_Manager
-from ..ghosts.ghost import Blinky, Clyde, Inky, Pinky
+from ..ghosts.ghost import (
+    STATE_EATEN,
+    STATE_FRIGHTENED,
+    Blinky,
+    Clyde,
+    Inky,
+    Pinky,
+)
 from ..ui.menu.hud import HUDTemplate
 
 
@@ -207,6 +214,12 @@ class MazeGameSession(Entity):
         delta = lhs - rhs
         return ((delta.x ** 2) + (delta.z ** 2)) ** 0.5
 
+    def _world_to_grid(self, world_pos: Vec3) -> tuple[int, int]:
+        return (
+            int(round(world_pos.x / self.maze_3d.scale)),
+            int(round(world_pos.z / self.maze_3d.scale)),
+        )
+
     def _respawn_positions(self) -> None:
         self.player.reset_to_spawn()
         for ghost in self.ghosts:
@@ -235,14 +248,22 @@ class MazeGameSession(Entity):
         if self.invulnerable_timer > 0:
             return
 
+        player_cell = self._world_to_grid(self.player.position)
+
         for ghost in self.ghosts:
-            if ghost.state == "eaten" or not ghost.visible:
+            if ghost.state == STATE_EATEN or not ghost.visible:
                 continue
 
-            if self._distance_xz(self.player.position, ghost.position) > 1.35:
+            ghost_cell = self._world_to_grid(ghost.position)
+            in_same_cell = ghost_cell == player_cell
+            close_in_world = (
+                self._distance_xz(self.player.position, ghost.position) <= 1.6
+            )
+
+            if not in_same_cell and not close_in_world:
                 continue
 
-            if self.power_mode_timer > 0 and ghost.state == "frightened":
+            if self.power_mode_timer > 0 and ghost.state == STATE_FRIGHTENED:
                 ghost.on_eaten(respawn_delay=3.0)
                 self.score += int(self.config.points_per_ghost)
                 self.hud.set_score(self.score)
