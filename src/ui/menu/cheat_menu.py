@@ -11,16 +11,19 @@ font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
 
 class Cheat():
-    def __init__(self, name, is_cursor=False):
+    def __init__(self, name, is_cursor=False, is_button=False):
         self.name = name
         self.state = False
         self.is_cursor = is_cursor
+        self.is_button = is_button
 
     def display(self, parent, i):
-        if not self.is_cursor:
-            checkbox_cheat(parent, self.name, i, self.change_state)
-        else:
+        if self.is_cursor:
             slider_cheat(parent, self.name, i, self.change_state)
+        elif self.is_button:
+            button_cheat(parent, self.name, i, self.change_state)
+        else:
+            checkbox_cheat(parent, self.name, i, self.change_state)
 
     def change_state(self, state):
         self.state = state
@@ -104,6 +107,45 @@ class slider_cheat(Slider):
             return
         self._change_state(self.value)
         self.last_value = self.value
+
+
+
+class button_cheat(Button):
+    def __init__(self, parent, name, i, _change_state):
+        self._change_state = _change_state
+        self.state = 0
+        super().__init__(
+            parent=parent,
+            scale=(0.03, 0.03),
+            x=0.4,
+            y=0 - i*-0.075,
+            color=color.white,
+            model='quad',
+            z=-0.1,
+        )
+        self.text_name = Text(
+            text=name,
+            parent=parent,
+            scale=1,
+            color=color.red,
+            origin=(-0.5, 0),
+            x=-0.4,
+            y=0-i*-0.075,
+            z=-0.1,
+            font=font_path
+        )
+        self.indicator = Entity(
+            parent=parent,
+            model='quad',
+            scale=0.025,
+            color=color.red,
+            x=0.4,
+            y=0 - i*-0.075,
+            z=-0.2
+        )
+
+    def on_click(self):
+        self._change_state(True)
 
 
 class checkbox_cheat(Button):

@@ -33,7 +33,8 @@ class PlayerController(Entity):
 =======
         pacgums=None,
         cheats_menu=None,
-        maze_3d=None
+        maze_3d=None,
+        config=None
     ):
         super().__init__()
         self.speed = speed
@@ -52,6 +53,8 @@ class PlayerController(Entity):
         self._base_camera_y = self.eye_height
         self._current_breath_offset = 0.0
         self.position = mini_map.player_spawn
+        self.lives = config.lives
+
         self.camera_pivot = Entity(parent=self, y=self.eye_height)
         camera.parent = self.camera_pivot
         camera.position = Vec3(0, 0, 0)
@@ -67,6 +70,13 @@ class PlayerController(Entity):
     def _handle_speed_cheat(self):
         if (self.cheats_menu.get_cheat("speed").state):
             self.speed = self.cheats_menu.get_cheat("speed").state
+
+    def _handle_lives_cheat(self):
+        if (self.cheats_menu.get_cheat("extra_lives").state):
+            self.cheats_menu.get_cheat("extra_lives").state = False
+            self.lives += 1
+    # Ca marche mais c est nul, a modifier
+
 
     def _axis_blocked(self, axis, delta):
         if abs(delta) < 0.0001:
@@ -145,6 +155,7 @@ class PlayerController(Entity):
 
         self._minimap_rotate_player()
         self._handle_pacgums_collisions()
+        self._handle_lives_cheat()
         self._apply_breathing(is_moving)
 
     def _handle_wallhack(self, model):

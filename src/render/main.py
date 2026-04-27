@@ -39,7 +39,8 @@ class MazeGameSession(Entity):
         self.cheats = [
             Cheat("no_clip"),
             Cheat("speed", is_cursor=True),
-            Cheat("wallhack")
+            Cheat("wallhack"),
+            Cheat("extra_lives", is_button=True)
         ]
 
         self._show_cheats = False
@@ -98,8 +99,10 @@ class MazeGameSession(Entity):
             mini_map=self.mini_map,
             pacgums=self.pacgums.pacgums,
             cheats_menu=self.cheats_menu,
-            maze_3d=self.maze_3d
+            maze_3d=self.maze_3d,
+            config=self.config
         )
+
 
     def _toogle_cheat_menu(self):
         if self._show_cheats:
@@ -112,7 +115,7 @@ class MazeGameSession(Entity):
     def _build_hud(self) -> None:
         self.hud = HUDTemplate(
             score=0,
-            lives=self.config.lives,
+            lives=self.player.lives,
             level=1,
             remaining_time=float(self.config.level_max_time),
             countdown=True,
@@ -131,6 +134,9 @@ class MazeGameSession(Entity):
     def _freeze_gameplay(self) -> None:
         self.player.enabled = False
         self.hud.countdown = False
+
+    def _sync_lives(self):
+        self.hud.lives = self.player.lives
 
     def _sync_score(self) -> None:
         normal_left = sum(
@@ -165,6 +171,7 @@ class MazeGameSession(Entity):
         if self.ended:
             return
         self._sync_score()
+        self._sync_lives()
 
 
     def close(self) -> None:
