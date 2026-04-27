@@ -33,8 +33,6 @@ class MazeGameSession(Entity):
         self.on_victory = on_victory
         self.ended = False
         self.score = 0
-<<<<<<< HEAD
-=======
         self._destroyables: list[Entity] = []
         self.cheats = [
             Cheat("no_clip"),

@@ -26,11 +26,6 @@ class PlayerController(Entity):
         mouse_sensitivity=Vec2(40, 40),
         skin_width=0.04,
         mini_map=None,
-<<<<<<< HEAD
-        pacgums=None
-        mini_map=None,
-        pacgums=None
-=======
         pacgums=None,
         cheats_menu=None,
         maze_3d=None,
@@ -48,7 +43,6 @@ class PlayerController(Entity):
         self.pacgums = pacgums
         self.cheats_menu = cheats_menu
         self.maze_3d = maze_3d
->>>>>>> dc40e28 (cheat)
         self._breath_t = 0.0
         self._base_camera_y = self.eye_height
         self._current_breath_offset = 0.0
