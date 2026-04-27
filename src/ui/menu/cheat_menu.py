@@ -80,7 +80,7 @@ class slider_cheat(Slider):
             x=0.1,
             y = self.pos_y,
             min=5,
-            max=50,
+            max=30,
             z=-0.1,
             default=10,
             bar_color=color.white,

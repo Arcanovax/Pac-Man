@@ -10,7 +10,7 @@ from ursina import (
     destroy,
     mouse,
     scene,
-    camera
+    camera,
 )
 from .maze_3d import Maze_3d
 from .minimap import MiniMap
@@ -26,15 +26,14 @@ class MazeGameSession(Entity):
         config,
         on_game_over=None,
         on_victory=None,
-        level_name=0
+        level=0
     ):
         super().__init__(parent=scene)
         self.config = config
-        self.size = self._get_size(level_name)
+        self.size = config.level[level].width, config.level[level].height
         self.on_game_over = on_game_over
         self.on_victory = on_victory
         self.ended = False
-        self.level_name = level_name
         self.score = 0
         self._destroyables: list[Entity] = []
         self.cheats = [
@@ -50,11 +49,7 @@ class MazeGameSession(Entity):
         self._build_hud()
         self._sync_score()
 
-    def _get_size(self, level_name):
-        for level in self.config.level:
-            if level.name == level_name:
-                return level.width, level.height
-        return None
+
 
     def _build_world(self) -> None:
         maze_gen = MazeGenerator(
@@ -76,7 +71,9 @@ class MazeGameSession(Entity):
         scale_maze = 4
         self.maze_3d = Maze_3d(maze, scale_maze)
 
+
         self.mini_map = MiniMap(self.maze_3d, 0.4)
+        self._destroyables.append(self.mini_map)
 
         self.pacgums = Pacgums_Manager(
             scale_maze,
@@ -133,14 +130,15 @@ class MazeGameSession(Entity):
         if self.ended:
             return
         self.ended = True
-        self.cheats_menu.hide()
         self._freeze_gameplay()
         mouse.locked = False
         if self.on_game_over is not None:
             self.on_game_over(self.score)
 
     def _freeze_gameplay(self) -> None:
-        self.player.enabled = False
+        for entity in scene.entities:
+            if entity not in (camera, camera.ui):
+                destroy(entity)
         self.hud.countdown = False
 
     def _sync_lives(self):
@@ -200,19 +198,8 @@ class MazeGameSession(Entity):
 
 
     def input(self, key):
-        if key=="f1":
-           self._toogle_cheat_menu()
-
-
-    def input(self, key):
-        if key=="f1":
-           self._toogle_cheat_menu()
-
-
-    def input(self, key):
-        if key=="escape":
-           self._toogle_cheat_menu()
-
+        if key =="escape":
+            self._toogle_cheat_menu()
 
 
 def run_main_maze(
@@ -220,6 +207,7 @@ def run_main_maze(
     on_game_over=None,
     on_victory=None,
     app: Ursina | None = None,
+    level=0
 ):
     local_app = app
     if local_app is None:
@@ -229,7 +217,7 @@ def run_main_maze(
         config=config,
         on_game_over=on_game_over,
         on_victory=on_victory,
-        level_name='easy'
+        level=level
     )
 
     if app is None:

@@ -108,11 +108,11 @@ class PlayerController(Entity):
         if (self.cheats_menu.get_cheat("no_clip").state):
             if axis == 'x':
                 wall_limit = self.maze_3d.x * self.maze_3d.scale
-                if 0 <= self.position.x <= wall_limit:
+                if 0 <= self.position.x < wall_limit:
                     return True
             elif axis == 'z':
                 wall_limit = -self.maze_3d.y * self.maze_3d.scale
-                if wall_limit <= self.position.z <= 0:
+                if wall_limit < self.position.z <= 0:
                     return True
 
     def _move_axis(self, axis, delta):

@@ -4,12 +4,13 @@
     "level": [ // List of available difficulty levels
         { "name": "easy", "width":8, "height": 10},
         { "name": "medium", "width":10, "height": 15},
+		{ "name": "medium2", "width":15, "height": 10},
         { "name": "hard" }
     ],
 
     "lives": 3, // Number of lives the player starts with
 
-    "pacgum": 42, // Total number of pacgums on the map
+    "pacgum": 1, // Total number of pacgums on the map
 
     "points_per_pacgum": 10, // Points earned for each pacgum eaten
     "points_per_super_pacgum": 50, // Points earned for each super pacgum eaten

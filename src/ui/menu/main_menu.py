@@ -49,6 +49,7 @@ def _build_menu_ui(app: Ursina, config) -> None:
     menu_buttons: list[MenuButton] = []
     overlay = OverlayMenuManager(menu_buttons)
     game_session = None
+    level = 0
 
     def _set_menu_visible(visible: bool) -> None:
         for entity in menu_entities:
@@ -75,12 +76,28 @@ def _build_menu_ui(app: Ursina, config) -> None:
         )
 
     def _on_victory(final_score: int) -> None:
-        show_victory_screen(
-            final_score=final_score,
-            highscore=highscore,
-            on_close=_back_to_menu,
-            highscore_filename=highscore_filename,
-        )
+        nonlocal level
+        level += 1
+        if level == len(config.level):
+            show_victory_screen(
+                final_score=final_score,
+                highscore=highscore,
+                on_close=_back_to_menu,
+                highscore_filename=highscore_filename,
+            )
+        else:
+            _start_level()
+
+    def _start_level():
+        nonlocal game_session
+
+        game_session = run_main_maze(
+                    config=config,
+                    on_game_over=_on_game_over,
+                    on_victory=_on_victory,
+                    app=app,
+                    level=level
+                )
 
     def _play() -> None:
         nonlocal game_session
@@ -91,12 +108,8 @@ def _build_menu_ui(app: Ursina, config) -> None:
         overlay.clear()
         _set_menu_visible(False)
         Logger.debug("Start game clicked from main menu")
-        game_session = run_main_maze(
-            config=config,
-            on_game_over=_on_game_over,
-            on_victory=_on_victory,
-            app=app,
-        )
+        _start_level()
+
 
     def _highscores() -> None:
         show_highscores_menu(highscore, overlay)
