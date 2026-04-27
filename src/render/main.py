@@ -26,12 +26,15 @@ class MazeGameSession(Entity):
         config,
         on_game_over=None,
         on_victory=None,
+        level_name=0
     ):
         super().__init__(parent=scene)
         self.config = config
+        self.size = self._get_size(level_name)
         self.on_game_over = on_game_over
         self.on_victory = on_victory
         self.ended = False
+        self.level_name = level_name
         self.score = 0
         self._destroyables: list[Entity] = []
         self.cheats = [
@@ -47,10 +50,15 @@ class MazeGameSession(Entity):
         self._build_hud()
         self._sync_score()
 
+    def _get_size(self, level_name):
+        for level in self.config.level:
+            if level.name == level_name:
+                return level.width, level.height
+        return None
+
     def _build_world(self) -> None:
-        size = (self.config.width, self.config.height)
         maze_gen = MazeGenerator(
-            size=size,
+            size=self.size,
             perfect=False,
             seed=self.config.seed,
         )
@@ -75,6 +83,7 @@ class MazeGameSession(Entity):
             self.config,
             self.maze_3d.pacgums_zone,
             self.mini_map,
+            self.size
         )
 
         self._normal_left = sum(
@@ -220,6 +229,7 @@ def run_main_maze(
         config=config,
         on_game_over=on_game_over,
         on_victory=on_victory,
+        level_name='easy'
     )
 
     if app is None:

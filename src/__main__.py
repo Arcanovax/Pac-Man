@@ -26,6 +26,7 @@ def main() -> None:
 
     Logger.debug(str(config))
 
+    print(config)
     run_main_menu(config)
 
 

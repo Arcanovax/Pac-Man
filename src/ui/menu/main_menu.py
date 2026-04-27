@@ -38,7 +38,7 @@ def _build_menu_ui(app: Ursina, config) -> None:
         "highscore_filename",
         "highscore.json",
     )
-    can_start_game = hasattr(config, "width") and hasattr(config, "height")
+    can_start_game = hasattr(config, "level")
 
     menu_entities: list[Entity] = []
     menu_entities.append(PacmanBackground())

@@ -9,9 +9,9 @@ class Pacgum_Type(Enum):
 
 
 class Pacgums_Manager():
-    def __init__(self, scale_maze, config, pacgums_zone, minimap):
-        self.height = config.height
-        self.width = config.width
+    def __init__(self, scale_maze, config, pacgums_zone, minimap, size):
+        self.width = size[0]
+        self.height = size[1]
         self.scale = scale_maze
         self.pacgums_zone = pacgums_zone
         self.minimap = minimap

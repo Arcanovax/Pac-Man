@@ -16,9 +16,15 @@ class Maze_3d():
         self.x = x
         self.walls.combine()
         self.walls.texture = "assets/textures/wall.jpg"
-        self.player_spawn = Vec3((x/2)*scale, 0, (-y/2)*scale)
+
+
         self.gen_floor(x, y, 0, scale)
         self.gen_floor(x, y, 4, scale)
+        if self.x % 2 == 1:
+            x -= 1
+        if self.y % 2 == 1:
+            y -= 1
+        self.player_spawn = Vec3((x/2)*scale, 0, (-y/2)*scale)
 
     def get_walls(self, val: int) -> dict[str, bool | int]:
         bits = f"{int(val):04b}"

@@ -2,13 +2,10 @@
     "highscore_filename": "highscore.json", // File where highscores are saved
 
     "level": [ // List of available difficulty levels
-        { "name": "easy" },
-        { "name": "medium" },
+        { "name": "easy", "width":8, "height": 10},
+        { "name": "medium", "width":10, "height": 15},
         { "name": "hard" }
     ],
-
-    "width": 15,  // Width of the game map
-    "height": 20, // Height of the game map
 
     "lives": 3, // Number of lives the player starts with
 

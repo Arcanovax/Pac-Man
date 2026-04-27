@@ -13,8 +13,9 @@ from ..logger import Logger
 
 class LevelModel(BaseModel):
     model_config = ConfigDict(extra="ignore")
-
     name: str = Field(min_length=1)
+    width: int = Field(gt=0, default=15)
+    height: int = Field(gt=0, default=20)
 
 
 class ConfigModel(BaseModel):
@@ -26,8 +27,6 @@ class ConfigModel(BaseModel):
         LevelModel(name="medium"),
         LevelModel(name="hard"),
     ])
-    width: int = Field(gt=0, default=50)
-    height: int = Field(gt=0, default=50)
     lives: int = Field(gt=0, default=3)
     pacgum: int = Field(gt=0, default=42)
     points_per_pacgum: int = Field(gt=0, default=10)
@@ -42,8 +41,6 @@ class ConfigModel(BaseModel):
             "Config Object: {\n"
             f"\tHighscore filename: {self.highscore_filename}\n"
             f"\tLevel: {self.level}\n"
-            f"\tWidth: {self.width}\n"
-            f"\tHeight: {self.height}\n"
             f"\tLives: {self.lives}\n"
             f"\tPacgum: {self.pacgum}\n"
             f"\tPoints per Pacgum: {self.points_per_pacgum}\n"
@@ -56,7 +53,7 @@ class ConfigModel(BaseModel):
         )
 
     @field_validator(
-        "width", "height", "lives", "pacgum",
+        "lives", "pacgum",
         "points_per_pacgum", "points_per_super_pacgum",
         "points_per_ghost", "level_max_time",
         mode="before"
