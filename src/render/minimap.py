@@ -2,7 +2,7 @@ from ursina import Entity, camera, color, duplicate
 
 
 class MiniMap(Entity):
-    def __init__(self, maze_3d, size, map_scale):
+    def __init__(self, maze_3d, map_scale):
         super().__init__(parent=camera.ui)
         self.map_scale = map_scale
         self.player_spawn = maze_3d.player_spawn

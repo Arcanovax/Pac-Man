@@ -12,6 +12,8 @@ class Maze_3d():
         for y in range(len(maze)):
             for x in range(len(maze[y])):
                 self.create_walls(x, y)
+        self.y = y
+        self.x = x
         self.walls.combine()
         self.walls.texture = "assets/textures/wall.jpg"
         self.player_spawn = Vec3((x/2)*scale, 0, (-y/2)*scale)

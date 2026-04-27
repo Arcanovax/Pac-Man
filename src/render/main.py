@@ -32,6 +32,13 @@ class MazeGameSession(Entity):
         self.on_victory = on_victory
         self.ended = False
         self.score = 0
+<<<<<<< HEAD
+=======
+        self._destroyables: list[Entity] = []
+        self.cheats = {
+            "no_clip":True
+        }
+>>>>>>> dc40e28 (cheat)
 
         self._build_world()
         self._build_hud()
@@ -61,7 +68,7 @@ class MazeGameSession(Entity):
         for floor in self.maze_3d.floors:
             self._destroyables.append(floor)
 
-        self.mini_map = MiniMap(self.maze_3d, size, 0.4)
+        self.mini_map = MiniMap(self.maze_3d, 0.4)
         self._destroyables.append(self.mini_map)
 
         self.pacgums = Pacgums_Manager(
@@ -77,6 +84,8 @@ class MazeGameSession(Entity):
         self._super_left = sum(
             1 for gum in self.pacgums.pacgums.get("super", []) if gum.visible
         )
+        
+        
 
         self.player = PlayerController(
             speed=10,
@@ -84,7 +93,9 @@ class MazeGameSession(Entity):
             eye_height=2.0,
             fov=90,
             mini_map=self.mini_map,
-            pacgums=self.pacgums.pacgums
+            pacgums=self.pacgums.pacgums,
+            cheats=self.cheats,
+            maze_3d=self.maze_3d
         )
         self._destroyables.append(self.player)
 

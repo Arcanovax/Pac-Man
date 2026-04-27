@@ -25,9 +25,16 @@ class PlayerController(Entity):
         mouse_sensitivity=Vec2(40, 40),
         skin_width=0.04,
         mini_map=None,
+<<<<<<< HEAD
         pacgums=None
         mini_map=None,
         pacgums=None
+=======
+        pacgums=None,
+        cheats={},
+        maze_3d=None
+        
+>>>>>>> dc40e28 (cheat)
     ):
         super().__init__()
         self.speed = speed
@@ -39,8 +46,13 @@ class PlayerController(Entity):
         self.skin_width = skin_width
         self.mini_map = mini_map
         self.pacgums = pacgums
+<<<<<<< HEAD
         self.mini_map = mini_map
         self.pacgums = pacgums
+=======
+        self.cheats = cheats
+        self.maze_3d = maze_3d
+>>>>>>> dc40e28 (cheat)
         self._breath_t = 0.0
         self._base_camera_y = self.eye_height
         self._current_breath_offset = 0.0
@@ -61,7 +73,11 @@ class PlayerController(Entity):
     def _axis_blocked(self, axis, delta):
         if abs(delta) < 0.0001:
             return False
-
+        if (self.cheats.get("no_clip") and
+            getattr(self.position, axis) <= self.maze_3d.x*self.maze_3d.scale and
+            getattr(self.position, axis) >= 0
+            ):
+            return False
         direction = Vec3(1, 0, 0) if axis == 'x' else Vec3(0, 0, 1)
         if delta < 0:
             direction = -direction
