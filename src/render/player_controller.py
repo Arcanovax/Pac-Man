@@ -125,7 +125,7 @@ class PlayerController(Entity):
                 traverse_target=scene,
             )
             if hit.hit:
-                if self._handle_noclip(axis):
+                if self._handle_noclip(axis, delta):
                     return False
 
             if hit.hit and not getattr(hit.entity, 'is_trigger', False):
@@ -133,21 +133,38 @@ class PlayerController(Entity):
 
         return False
 
-    def _handle_noclip(self, axis):
+    def _handle_noclip(self, axis, delta):
         if (self.cheats_menu.get_cheat("no_clip").state):
             if axis == 'x':
                 wall_limit = self.maze_3d.x * self.maze_3d.scale
-                if 0 <= self.position.x < wall_limit:
+                if 0 < self.position.x + delta < wall_limit:
                     return True
             elif axis == 'z':
                 wall_limit = -self.maze_3d.y * self.maze_3d.scale
-                if wall_limit < self.position.z <= 0:
+                if wall_limit < self.position.z + delta < 0:
                     return True
 
     def _move_axis(self, axis: str, delta: float) -> None:
         if self._axis_blocked(axis, delta):
             return
+
+        if self.maze_3d and self._walls_limits(axis, delta):
+            return
+
         setattr(self, axis, getattr(self, axis) + delta)
+
+    def _walls_limits(self, axis: str, delta: float):
+        next_pos = getattr(self.position, axis) + delta
+        if axis == 'x':
+            wall_limit = self.maze_3d.x * self.maze_3d.scale
+            if next_pos < -1 or next_pos > wall_limit +1:
+                return True
+        elif axis == 'z':
+            wall_limit = -self.maze_3d.y * self.maze_3d.scale
+            if next_pos < wall_limit -1 or next_pos > 1:
+                return True
+        return False
+
 
     def _rotate_camera(self):
         if self.cheats_menu.menu.enabled is True:
