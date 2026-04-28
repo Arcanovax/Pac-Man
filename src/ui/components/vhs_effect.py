@@ -24,6 +24,7 @@ class VHSEffect(Entity):
 
         Entity(
             parent=self,
+            add_to_scene_entities=False,
             model="quad",
             scale=(2.08, 1.22),
             z=-0.86,
@@ -32,6 +33,7 @@ class VHSEffect(Entity):
 
         self._red_bleed = Entity(
             parent=self,
+            add_to_scene_entities=False,
             model="quad",
             x=0.0015,
             scale=(2.08, 1.22),
@@ -41,6 +43,7 @@ class VHSEffect(Entity):
 
         self._blue_bleed = Entity(
             parent=self,
+            add_to_scene_entities=False,
             model="quad",
             x=-0.0015,
             scale=(2.08, 1.22),
@@ -50,6 +53,7 @@ class VHSEffect(Entity):
 
         self._noise_band = Entity(
             parent=self,
+            add_to_scene_entities=False,
             model="quad",
             y=0.62,
             scale=(2.12, 0.055),
@@ -67,6 +71,7 @@ class VHSEffect(Entity):
             y = 0.68 - (i * step)
             line = Entity(
                 parent=self,
+                add_to_scene_entities=False,
                 model="quad",
                 y=y,
                 scale=(2.12, 0.0026),

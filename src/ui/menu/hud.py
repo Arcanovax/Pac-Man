@@ -34,6 +34,7 @@ class HUDTemplate(Entity):
 
         self.score_text = Text(
             parent=self,
+            add_to_scene_entities=False,
             text="",
             position=Vec2(-0.86, 0.46),
             color=color.white,
@@ -42,6 +43,7 @@ class HUDTemplate(Entity):
         )
         self.time_text = Text(
             parent=self,
+            add_to_scene_entities=False,
             text="",
             position=Vec2(0.56, 0.075),
             color=color.white,
@@ -50,6 +52,7 @@ class HUDTemplate(Entity):
         )
         self.lives_text = Text(
             parent=self,
+            add_to_scene_entities=False,
             text="",
             position=Vec2(-0.86, -0.45),
             color=color.white,
@@ -61,6 +64,7 @@ class HUDTemplate(Entity):
         self._lives_pulse_scale = 1.22
         self.level_text = Text(
             parent=self,
+            add_to_scene_entities=False,
             text="",
             position=Vec2(0.70, -0.45),
             color=color.white,

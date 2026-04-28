@@ -162,6 +162,7 @@ class MazeGameSession(Entity):
             config=self.config,
             hit_ghost=self._on_player_hit,
         )
+        self.player.lives = self.lives
 
         spawn_cells = self._corner_spawn_cells(self.walkable_cells)
 
@@ -211,7 +212,7 @@ class MazeGameSession(Entity):
     def _build_hud(self) -> None:
         self.hud = HUDTemplate(
             score=0,
-            lives=self.player.lives,
+            lives=self.lives,
             level=1,
             remaining_time=float(self.config.level_max_time),
             countdown=True,
@@ -265,6 +266,7 @@ class MazeGameSession(Entity):
             return
 
         self.lives -= 1
+        self.player.lives = self.lives
         self.hud.set_lives(self.lives)
 
         if self.lives <= 0:
@@ -305,7 +307,11 @@ class MazeGameSession(Entity):
             break
 
     def _sync_lives(self):
-        self.hud.lives = self.player.lives
+        if self.player.lives != self.lives:
+            self.lives = max(0, int(self.player.lives))
+
+        self.player.lives = self.lives
+        self.hud.set_lives(self.lives)
 
     def _sync_score(self) -> None:
         normal_left = sum(
