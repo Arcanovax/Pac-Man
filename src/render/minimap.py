@@ -6,6 +6,7 @@ class MiniMap(Entity):
         super().__init__(parent=camera.ui)
         self.map_scale = map_scale
         self.player_spawn = maze_3d.player_spawn
+        self.ghost_markers: dict[Entity, Entity] = {}
         self.display_minimap(maze_3d.walls, map_scale)
 
     def display_minimap(self, walls, scale):
@@ -90,6 +91,24 @@ class MiniMap(Entity):
             position=self.player_spawn,
             rotation_y=90
         )
+
+    def attach_ghosts(self, ghosts: list[Entity]) -> None:
+        for ghost in ghosts:
+            marker = Entity(
+                parent=self.minimap_walls,
+                model='cube',
+                color=ghost.color,
+                scale=(1.0, 1.0, 1.0),
+                position=ghost.position,
+                z=ghost.position.z,
+            )
+            self.ghost_markers[ghost] = marker
+
+    def update_ghosts(self) -> None:
+        for ghost, marker in self.ghost_markers.items():
+            marker.position = ghost.position
+            marker.visible = ghost.visible
+            marker.color = ghost.color
 
     def get_ui_map(self):
         return self.minimap_walls

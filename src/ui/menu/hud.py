@@ -1,5 +1,6 @@
 from collections.abc import Callable
-from ursina import Entity, Text, Ursina, Vec2, camera, color, time
+from ursina import Entity, Text, Ursina, Vec2, camera, color, invoke, time
+from ursina.curve import linear
 from ..components.vhs_effect import VHSEffect
 
 
@@ -42,7 +43,7 @@ class HUDTemplate(Entity):
         self.time_text = Text(
             parent=self,
             text="",
-            position=Vec2(0.56, 0.46),
+            position=Vec2(0.56, 0.075),
             color=color.white,
             scale=1.0,
             font=font_path,
@@ -55,6 +56,9 @@ class HUDTemplate(Entity):
             scale=1.0,
             font=font_path,
         )
+        self._lives_base_color = color.white
+        self._lives_base_scale = 1.0
+        self._lives_pulse_scale = 1.22
         self.level_text = Text(
             parent=self,
             text="",
@@ -82,11 +86,41 @@ class HUDTemplate(Entity):
         self.set_score(self.score + int(value))
 
     def set_lives(self, value: int):
+        previous_lives = self.lives
         self.lives = max(0, int(value))
         self.refresh()
+        if self.lives < previous_lives:
+            self._play_life_loss_animation()
 
     def lose_life(self):
         self.set_lives(self.lives - 1)
+
+    def _play_life_loss_animation(self):
+        self.lives_text.scale = self._lives_base_scale
+        self.lives_text.color = self._lives_base_color
+        self.lives_text.animate_scale(
+            self._lives_pulse_scale,
+            duration=0.08,
+            curve=linear,
+        )
+        self.lives_text.animate_color(
+            color.rgb(1.0, 0.25, 0.25),
+            duration=0.08,
+            curve=linear,
+        )
+        invoke(self._restore_lives_text, delay=0.09)
+
+    def _restore_lives_text(self):
+        self.lives_text.animate_scale(
+            self._lives_base_scale,
+            duration=0.18,
+            curve=linear,
+        )
+        self.lives_text.animate_color(
+            self._lives_base_color,
+            duration=0.18,
+            curve=linear,
+        )
 
     def set_level(self, value: int):
         self.level = max(1, int(value))

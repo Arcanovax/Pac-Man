@@ -5,6 +5,7 @@ from ursina import (
     color as colors,
     destroy,
     window,
+    scene
 )
 
 from ...logger import Logger
@@ -32,6 +33,10 @@ def run_main_menu(config) -> None:
 
 
 def _build_menu_ui(app: Ursina, config) -> None:
+    for entity in scene.entities:
+        if entity != camera and entity != camera.ui:
+            destroy(entity)
+
     highscore = getattr(config, "highscore", config)
     highscore_filename = getattr(
         config,
@@ -51,21 +56,12 @@ def _build_menu_ui(app: Ursina, config) -> None:
     game_session = None
     level = 0
 
-    def _set_menu_visible(visible: bool) -> None:
-        for entity in menu_entities:
-            entity.enabled = visible
-            entity.visible = visible
-
-        for button in menu_buttons:
-            button.enabled = visible
-            button.visible = visible
-
     def _back_to_menu() -> None:
         nonlocal game_session
         if game_session is not None:
             game_session.close()
             game_session = None
-        _set_menu_visible(True)
+        _build_menu_ui(app, config)
 
     def _on_game_over(final_score: int) -> None:
         show_game_over_screen(
@@ -106,10 +102,11 @@ def _build_menu_ui(app: Ursina, config) -> None:
             return
 
         overlay.clear()
-        _set_menu_visible(False)
+        for entity in scene.entities:
+            if entity not in (camera, camera.ui):
+                destroy(entity)
         Logger.debug("Start game clicked from main menu")
         _start_level()
-
 
     def _highscores() -> None:
         show_highscores_menu(highscore, overlay)
