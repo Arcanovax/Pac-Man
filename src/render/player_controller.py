@@ -50,6 +50,7 @@ class PlayerController(Entity):
         self.maze_3d = maze_3d
         self.hit_ghost = hit_ghost
 
+
         self._breath_t = 0.0
         self._base_camera_y = self.eye_height
         self._current_breath_offset = 0.0
@@ -269,3 +270,4 @@ class PlayerController(Entity):
         self._current_breath_offset = 0.0
         self.camera_pivot.y = self._base_camera_y
         self._minimap_move_player()
+        self.mini_map.player.rotation_y = 90
