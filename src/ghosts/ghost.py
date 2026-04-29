@@ -1,6 +1,7 @@
 import random
 from collections import deque
 from typing import Any
+from ursina.color import rgba32
 
 import math
 
@@ -26,7 +27,7 @@ class Ghost(Entity):
         maze_grid: list[list[int]],
         scatter_target: GridPos,
         player: Entity,
-        ghost_color: str,
+        model: str,
         speed: float = 4.4,
     ):
         spawn_world = Vec3(
@@ -37,9 +38,8 @@ class Ghost(Entity):
 
         super().__init__(
             name=name,
-            model="assets/models/ghost.glb",
-            color=ghost_color,
-            scale=(1.5, 1.5, 1.5),
+            model=model,
+            scale=(10.0, 10.0, 10.0),
             position=spawn_world,
             collider="box",
         )
@@ -50,7 +50,6 @@ class Ghost(Entity):
         self.maze_grid = maze_grid
         self.scatter_target = scatter_target
         self.player = player
-        self.base_color = ghost_color
         self.base_speed = speed
         self.speed = speed
 
@@ -180,7 +179,7 @@ class Ghost(Entity):
         self._respawn_timer = 0.0
         self.path.clear()
         self._current_target = None
-        self.color = self.base_color
+        self.color = rgba32(r=255, g=255, b=255, a=255)
         self.enabled = True
         self.visible = True
         self.position = self._grid_to_world(*self.spawn_coords)
@@ -295,7 +294,7 @@ class Blinky(Ghost):
             maze_grid=maze_grid,
             scatter_target=scatter_target,
             player=player,
-            ghost_color=color.red,
+            model="assets/models/ghost_red.glb",
             speed=4.7,
         )
 
@@ -318,7 +317,7 @@ class Pinky(Ghost):
             maze_grid=maze_grid,
             scatter_target=scatter_target,
             player=player,
-            ghost_color=color.rgb(1.0, 0.4, 0.7),
+            model="assets/models/ghost_pink.glb",
             speed=4.45,
         )
 
@@ -347,7 +346,7 @@ class Inky(Ghost):
             maze_grid=maze_grid,
             scatter_target=scatter_target,
             player=player,
-            ghost_color=color.cyan,
+            model="assets/models/ghost_cyan.glb",
             speed=4.35,
         )
 
@@ -381,7 +380,7 @@ class Clyde(Ghost):
             maze_grid=maze_grid,
             scatter_target=scatter_target,
             player=player,
-            ghost_color=color.orange,
+            model="assets/models/ghost_orange.glb",
             speed=4.10,
         )
 
