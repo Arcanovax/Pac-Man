@@ -87,7 +87,7 @@ class MiniMap(Entity):
             parent=self.minimap_walls,
             model='pacman.obj',
             color=color.yellow,
-            scale=(0.125, 0, 0.125),
+            scale=(0.075, 0, 0.075),
             position=self.player_spawn,
             rotation_y=90
         )
