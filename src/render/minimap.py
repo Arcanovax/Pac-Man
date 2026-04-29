@@ -87,7 +87,7 @@ class MiniMap(Entity):
             parent=self.minimap_walls,
             model='pacman.obj',
             color=color.yellow,
-            scale=(0.075, 0, 0.075),
+            scale=(0.075, 0.075, 0.075),
             position=self.player_spawn,
             rotation_y=90
         )
@@ -97,10 +97,9 @@ class MiniMap(Entity):
             marker = Entity(
                 parent=self.minimap_walls,
                 model='cube',
-                color=ghost.color,
-                scale=(1.0, 1.0, 1.0),
+                texture=ghost.blips,
+                scale=(2.0, 2.0, 2.0),
                 position=ghost.position,
-                z=ghost.position.z,
             )
             self.ghost_markers[ghost] = marker
 

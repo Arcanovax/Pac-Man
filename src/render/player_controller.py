@@ -24,7 +24,7 @@ class PlayerController(Entity):
     def __init__(
         self,
         speed: float = 10,
-        collider_size: Vec3 = Vec3(0.34, 2, 0.34),
+        collider_size: Vec3 = Vec3(0.99, 2, 0.99),
         eye_height: float = 1.6,
         fov: float = 100,
         mouse_sensitivity: Vec2 = Vec2(40, 40),
@@ -194,7 +194,7 @@ class PlayerController(Entity):
         self._minimap_move_player()
         return True
 
-    def update(self):
+    def update(self) -> None:
         self._mouse_look()
         is_moving = self._move_player(self._movement_input())
 
