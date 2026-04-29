@@ -40,11 +40,14 @@ class MazeGameSession(Entity):
     ):
         super().__init__(parent=scene)
         self.config = config
+        self.current_level = level
         self.size = config.level[level].width, config.level[level].height
         self.on_game_over = on_game_over
         self.on_victory = on_victory
         self.ended = False
         self.score = 0
+        self.level_max_time = config.level[level].level_max_time
+        self.pacgum = config.level[level].pacgum
         self.cheats = [
             Cheat("no_clip"),
             Cheat("speed", is_cursor=True),
@@ -135,7 +138,8 @@ class MazeGameSession(Entity):
             self.config,
             list(self.maze_3d.pacgums_zone),
             self.mini_map,
-            self.size
+            self.size,
+            self.current_level
         )
 
         self._normal_left = sum(
@@ -214,7 +218,7 @@ class MazeGameSession(Entity):
             score=0,
             lives=self.lives,
             level=1,
-            remaining_time=float(self.config.level_max_time),
+            remaining_time=float(self.level_max_time),
             countdown=True,
             on_time_finished=self._time_up,
         )

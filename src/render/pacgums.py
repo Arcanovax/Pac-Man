@@ -9,13 +9,13 @@ class Pacgum_Type(Enum):
 
 
 class Pacgums_Manager():
-    def __init__(self, scale_maze, config, pacgums_zone, minimap, size):
+    def __init__(self, scale_maze, config, pacgums_zone, minimap, size, current_level):
         self.width = size[0]
         self.height = size[1]
         self.scale = scale_maze
         self.pacgums_zone = pacgums_zone
         self.minimap = minimap
-        self.nb_pacgum = config.pacgum
+        self.nb_pacgum = config.level[current_level].pacgum
         self.pacgums = {
             "normal": [],
             "super": []

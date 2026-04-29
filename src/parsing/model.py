@@ -16,6 +16,28 @@ class LevelModel(BaseModel):
     name: str = Field(min_length=1)
     width: int = Field(gt=0, default=15)
     height: int = Field(gt=0, default=20)
+    level_max_time: int = Field(gt=0, default=90)
+    pacgum: int = Field(gt=0, default=42)
+
+    @field_validator(
+        "pacgum", "level_max_time",
+        mode="before"
+    )
+    @classmethod
+    def _validate_positive(cls, v: Any, info: Any) -> Any:
+        field_name = info.field_name
+
+        try:
+            v = int(v)
+        except Exception:
+            Logger.warning(f"'{field_name}' invalid, using default")
+            return cls.model_fields[field_name].default
+
+        if v <= 0:
+            Logger.warning(f"'{field_name}' must be > 0, using default")
+            return cls.model_fields[field_name].default
+
+        return v
 
 
 class ConfigModel(BaseModel):
@@ -28,12 +50,10 @@ class ConfigModel(BaseModel):
         LevelModel(name="hard"),
     ])
     lives: int = Field(gt=0, default=3)
-    pacgum: int = Field(gt=0, default=42)
     points_per_pacgum: int = Field(gt=0, default=10)
     points_per_super_pacgum: int = Field(gt=0, default=50)
     points_per_ghost: int = Field(gt=0, default=200)
     seed: int = Field(default=42)
-    level_max_time: int = Field(gt=0, default=90)
     highscore: list[dict[str, int | str]] = Field(default=[])
 
     def __str__(self) -> str:
@@ -42,20 +62,18 @@ class ConfigModel(BaseModel):
             f"\tHighscore filename: {self.highscore_filename}\n"
             f"\tLevel: {self.level}\n"
             f"\tLives: {self.lives}\n"
-            f"\tPacgum: {self.pacgum}\n"
             f"\tPoints per Pacgum: {self.points_per_pacgum}\n"
             f"\tPoints per Super Pacgum: {self.points_per_super_pacgum}\n"
             f"\tPoints per Ghost: {self.points_per_ghost}\n"
             f"\tSeed: {self.seed}\n"
-            f"\tLevel max time: {self.level_max_time}\n"
             f"\tHigh Score: {self.highscore}\n"
             "}\n"
         )
 
     @field_validator(
-        "lives", "pacgum",
+        "lives",
         "points_per_pacgum", "points_per_super_pacgum",
-        "points_per_ghost", "level_max_time",
+        "points_per_ghost",
         mode="before"
     )
     @classmethod
