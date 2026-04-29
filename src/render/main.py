@@ -36,27 +36,26 @@ class MazeGameSession(Entity):
         config,
         on_game_over=None,
         on_victory=None,
-        level=0
+        player_stats=None
     ):
         super().__init__(parent=scene)
         self.config = config
-        self.current_level = level
+        self.player_stats = player_stats
+        level = player_stats.level
         self.size = config.level[level].width, config.level[level].height
+        self.nb_level = level + 1
         self.on_game_over = on_game_over
         self.on_victory = on_victory
         self.ended = False
-        self.score = 0
-        self.level_max_time = config.level[level].level_max_time
-        self.pacgum = config.level[level].pacgum
         self.cheats = [
             Cheat("no_clip"),
             Cheat("speed", is_cursor=True),
             Cheat("wallhack"),
             Cheat("extra_lives", is_button=True)
         ]
-
+        self.score = player_stats.score
+        self.lives = player_stats.lives
         self._show_cheats = False
-        self.lives = int(self.config.lives)
         self.power_mode_timer = 0.0
         self.invulnerable_timer = 1.5
 
@@ -217,8 +216,8 @@ class MazeGameSession(Entity):
         self.hud = HUDTemplate(
             score=0,
             lives=self.lives,
-            level=1,
-            remaining_time=float(self.level_max_time),
+            level=self.nb_level,
+            remaining_time=float(self.config.level_max_time),
             countdown=True,
             on_time_finished=self._time_up,
         )
@@ -235,6 +234,9 @@ class MazeGameSession(Entity):
     def _freeze_gameplay(self) -> None:
         self.player.enabled = False
         self.hud.countdown = False
+        self.player_stats.update("score", self.score)
+        self.player_stats.update("level", self.nb_level)
+        self.player_stats.update("lives", self.lives)
 
         for ghost in self.ghosts:
             ghost.enabled = False
@@ -383,7 +385,6 @@ class MazeGameSession(Entity):
         for entity in scene.entities:
             if entity not in (camera, camera.ui):
                 destroy(entity)
-
         destroy(self)
 
     def input(self, key):
@@ -396,7 +397,7 @@ def run_main_maze(
     on_game_over=None,
     on_victory=None,
     app: Ursina | None = None,
-    level=0
+    player_stats=None
 ):
     local_app = app
     if local_app is None:
@@ -406,7 +407,7 @@ def run_main_maze(
         config=config,
         on_game_over=on_game_over,
         on_victory=on_victory,
-        level=level
+        player_stats=player_stats
     )
 
     if app is None:

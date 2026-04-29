@@ -15,7 +15,7 @@ from .end_screen import show_game_over_screen, show_victory_screen
 from .highscores_menu import show_highscores_menu  # type: ignore
 from .instructions_menu import show_instructions_menu  # type: ignore
 from .overlay_menu import OverlayMenuManager  # type: ignore
-
+from .player_stats import Player_Stats
 
 def run_main_menu(config) -> None:
     app = Ursina(
@@ -54,7 +54,8 @@ def _build_menu_ui(app: Ursina, config) -> None:
     menu_buttons: list[MenuButton] = []
     overlay = OverlayMenuManager(menu_buttons)
     game_session = None
-    level = 0
+    player_stats = Player_Stats(0, 0, int(config.lives))
+
 
     def _back_to_menu() -> None:
         nonlocal game_session
@@ -72,9 +73,8 @@ def _build_menu_ui(app: Ursina, config) -> None:
         )
 
     def _on_victory(final_score: int) -> None:
-        nonlocal level
-        level += 1
-        if level == len(config.level):
+        nonlocal player_stats
+        if player_stats.level == len(config.level):
             show_victory_screen(
                 final_score=final_score,
                 highscore=highscore,
@@ -86,17 +86,16 @@ def _build_menu_ui(app: Ursina, config) -> None:
 
     def _start_level():
         nonlocal game_session
-
+        nonlocal player_stats
         game_session = run_main_maze(
                     config=config,
                     on_game_over=_on_game_over,
                     on_victory=_on_victory,
                     app=app,
-                    level=level
+                    player_stats=player_stats
                 )
 
     def _play() -> None:
-        nonlocal game_session
         if not can_start_game:
             Logger.warning("Cannot start game from sample highscore mode")
             return

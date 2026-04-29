@@ -84,11 +84,6 @@ class PlayerController(Entity):
             self.cheats_menu.get_cheat("extra_lives").state = False
             self.lives += 1
 
-
-    def _axis_blocked(self, axis, delta):
-        if abs(delta) < 0.0001:
-            return False
-
     def _axis_direction(self, axis: str, delta: float) -> Vec3:
         direction = Vec3(1, 0, 0) if axis == AXIS_X else Vec3(0, 0, 1)
         if delta < 0:
