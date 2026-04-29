@@ -191,6 +191,7 @@ class Ghost(Entity):
         )
         self.rotation = (0, 0, 0)
 
+
     def on_eaten(self, respawn_delay: float = 3.0) -> None:
         self.state = STATE_EATEN
         self._respawn_timer = max(0.1, float(respawn_delay))
