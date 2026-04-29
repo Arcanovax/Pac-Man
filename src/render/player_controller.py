@@ -83,7 +83,6 @@ class PlayerController(Entity):
         if (self.cheats_menu.get_cheat("extra_lives").state):
             self.cheats_menu.get_cheat("extra_lives").state = False
             self.lives += 1
-    # Ca marche mais c est nul, a modifier
 
 
     def _axis_blocked(self, axis, delta):
