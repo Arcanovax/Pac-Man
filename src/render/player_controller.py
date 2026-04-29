@@ -1,5 +1,5 @@
 import math
-from typing import Callable
+from typing import Callable, Any
 
 from ursina import (
     BoxCollider,
@@ -49,7 +49,6 @@ class PlayerController(Entity):
         self.cheats_menu = cheats_menu
         self.maze_3d = maze_3d
         self.hit_ghost = hit_ghost
-
 
         self._breath_t = 0.0
         self._base_camera_y = self.eye_height
@@ -151,14 +150,13 @@ class PlayerController(Entity):
         next_pos = getattr(self.position, axis) + delta
         if axis == 'x':
             wall_limit = self.maze_3d.x * self.maze_3d.scale
-            if next_pos < -1 or next_pos > wall_limit +1:
+            if next_pos < -1 or next_pos > wall_limit + 1:
                 return True
         elif axis == 'z':
             wall_limit = -self.maze_3d.y * self.maze_3d.scale
-            if next_pos < wall_limit -1 or next_pos > 1:
+            if next_pos < wall_limit - 1 or next_pos > 1:
                 return True
         return False
-
 
     def _rotate_camera(self):
         if self.cheats_menu.menu.enabled is True:
@@ -188,7 +186,8 @@ class PlayerController(Entity):
 
         self._handle_speed_cheat()
         move_input = move_input.normalized() * self.speed * time.dt
-        world_move = (self.right * move_input.x) + (self.forward * move_input.z)
+        world_move = (self.right * move_input.x) + \
+            (self.forward * move_input.z)
 
         self._move_axis(AXIS_X, world_move.x)
         self._move_axis(AXIS_Z, world_move.z)
@@ -205,7 +204,7 @@ class PlayerController(Entity):
         self._handle_lives_cheat()
         self._apply_breathing(is_moving)
 
-    def _handle_wallhack(self, model):
+    def _handle_wallhack(self, model: Any) -> None:
         is_actif = self.cheats_menu.get_cheat("wallhack").state
         model.always_on_top = is_actif
         if is_actif:
@@ -221,7 +220,7 @@ class PlayerController(Entity):
             self.position.z >= target_pos.z - half_size
         )
 
-    def _handle_pacgums_collisions(self):
+    def _handle_pacgums_collisions(self) -> None:
         if not self.pacgums:
             return
 
@@ -247,14 +246,14 @@ class PlayerController(Entity):
                 if self._is_inside_square(gum_pos, half_size=2):
                     gum.hide()
 
-    def _minimap_move_player(self):
+    def _minimap_move_player(self) -> None:
         self.mini_map.player.x = self.position.x
         self.mini_map.player.z = self.position.z
 
-    def _minimap_rotate_player(self):
+    def _minimap_rotate_player(self) -> None:
         self.mini_map.player.rotation_y += mouse.velocity[0] * 40
 
-    def _apply_breathing(self, is_moving):
+    def _apply_breathing(self, is_moving: bool) -> None:
         if is_moving:
             frequency = 16.0
             amplitude = 0.028
@@ -269,7 +268,7 @@ class PlayerController(Entity):
         ) * min(1.0, time.dt * 12.0)
         self.camera_pivot.y = self._base_camera_y + self._current_breath_offset
 
-    def reset_to_spawn(self):
+    def reset_to_spawn(self) -> None:
         self.position = Vec3(
             self.spawn_position.x,
             self.spawn_position.y,

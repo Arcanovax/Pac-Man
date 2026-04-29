@@ -76,30 +76,30 @@ class HUDTemplate(Entity):
 
         self.refresh()
 
-    def refresh(self):
+    def refresh(self) -> None:
         self.score_text.text = f"SCORE {self.score:06d}"
         self.time_text.text = f"TIME {_fmt_time(self.remaining_time)}"
         self.lives_text.text = f"LIVES {self.lives}"
         self.level_text.text = f"LVL {self.level:02d}"
 
-    def set_score(self, value: int):
+    def set_score(self, value: int) -> None:
         self.score = max(0, int(value))
         self.refresh()
 
-    def add_score(self, value: int):
+    def add_score(self, value: int) -> None:
         self.set_score(self.score + int(value))
 
-    def set_lives(self, value: int):
+    def set_lives(self, value: int) -> None:
         previous_lives = self.lives
         self.lives = max(0, int(value))
         self.refresh()
         if self.lives < previous_lives:
             self._play_life_loss_animation()
 
-    def lose_life(self):
+    def lose_life(self) -> None:
         self.set_lives(self.lives - 1)
 
-    def _play_life_loss_animation(self):
+    def _play_life_loss_animation(self) -> None:
         self.lives_text.scale = self._lives_base_scale
         self.lives_text.color = self._lives_base_color
         self.lives_text.animate_scale(
@@ -114,7 +114,7 @@ class HUDTemplate(Entity):
         )
         invoke(self._restore_lives_text, delay=0.09)
 
-    def _restore_lives_text(self):
+    def _restore_lives_text(self) -> None:
         self.lives_text.animate_scale(
             self._lives_base_scale,
             duration=0.18,
@@ -126,17 +126,17 @@ class HUDTemplate(Entity):
             curve=linear,
         )
 
-    def set_level(self, value: int):
+    def set_level(self, value: int) -> None:
         self.level = max(1, int(value))
         self.refresh()
 
-    def set_remaining_time(self, value: float):
+    def set_remaining_time(self, value: float) -> None:
         self.remaining_time = max(0.0, float(value))
         if self.remaining_time > 0:
             self._time_finished_called = False
         self.refresh()
 
-    def add_time(self, value: float):
+    def add_time(self, value: float) -> None:
         self.set_remaining_time(self.remaining_time + float(value))
 
     def update_hud(
@@ -145,7 +145,7 @@ class HUDTemplate(Entity):
         lives: int | None = None,
         level: int | None = None,
         remaining_time: float | None = None,
-    ):
+    ) -> None:
         if score is not None:
             self.score = max(0, int(score))
         if lives is not None:
@@ -158,7 +158,7 @@ class HUDTemplate(Entity):
             self._time_finished_called = False
         self.refresh()
 
-    def update(self):
+    def update(self) -> None:
         if self.countdown and self.remaining_time > 0:
             self.remaining_time = max(0.0, self.remaining_time - time.dt)
             if self.remaining_time <= 0 and not self._time_finished_called:
@@ -169,11 +169,11 @@ class HUDTemplate(Entity):
 
 
 class _HUDTester(Entity):
-    def __init__(self, hud: HUDTemplate):
+    def __init__(self, hud: HUDTemplate) -> None:
         super().__init__()
         self.hud = hud
 
-    def input(self, key):
+    def input(self, key: str) -> None:
         if key == 'p':
             self.hud.add_score(100)
         elif key == 'o':
@@ -199,7 +199,7 @@ class _HUDTester(Entity):
             )
 
 
-def main():
+def main() -> None:
     app = Ursina()
     hud = HUDTemplate(
         score=0,

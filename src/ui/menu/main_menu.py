@@ -1,3 +1,4 @@
+from typing import Any
 from ursina import (
     Entity,
     Ursina,
@@ -12,12 +13,13 @@ from ...logger import Logger
 from ...render.main import run_main_maze
 from ..components import MenuButton, MenuLogo, PacmanBackground, VHSEffect
 from .end_screen import show_game_over_screen, show_victory_screen
-from .highscores_menu import show_highscores_menu  # type: ignore
-from .instructions_menu import show_instructions_menu  # type: ignore
-from .overlay_menu import OverlayMenuManager  # type: ignore
+from .highscores_menu import show_highscores_menu
+from .instructions_menu import show_instructions_menu
+from .overlay_menu import OverlayMenuManager
 from .player_stats import Player_Stats
 
-def run_main_menu(config) -> None:
+
+def run_main_menu(config: Any) -> None:
     app = Ursina(
         borderless=False,
         title="Pac-Man",
@@ -32,7 +34,7 @@ def run_main_menu(config) -> None:
     app.run()
 
 
-def _build_menu_ui(app: Ursina, config) -> None:
+def _build_menu_ui(app: Ursina, config: Any) -> None:
     for entity in scene.entities:
         if entity != camera and entity != camera.ui:
             destroy(entity)
@@ -56,7 +58,6 @@ def _build_menu_ui(app: Ursina, config) -> None:
     game_session = None
     player_stats = Player_Stats(0, 0, int(config.lives))
 
-
     def _back_to_menu() -> None:
         nonlocal game_session
         if game_session is not None:
@@ -73,7 +74,6 @@ def _build_menu_ui(app: Ursina, config) -> None:
         )
 
     def _on_victory(final_score: int) -> None:
-        nonlocal player_stats
         if player_stats.level == len(config.level):
             show_victory_screen(
                 final_score=final_score,
@@ -84,9 +84,8 @@ def _build_menu_ui(app: Ursina, config) -> None:
         else:
             _start_level()
 
-    def _start_level():
+    def _start_level() -> None:
         nonlocal game_session
-        nonlocal player_stats
         game_session = run_main_maze(
                     config=config,
                     on_game_over=_on_game_over,

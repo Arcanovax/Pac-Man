@@ -43,6 +43,7 @@ class MazeGameSession(Entity):
         self.player_stats = player_stats
         level = player_stats.level
         self.size = config.level[level].width, config.level[level].height
+        self.current_level = level
         self.nb_level = level + 1
         self.on_game_over = on_game_over
         self.on_victory = on_victory
@@ -58,6 +59,7 @@ class MazeGameSession(Entity):
         self._show_cheats = False
         self.power_mode_timer = 0.0
         self.invulnerable_timer = 1.5
+        self.level_max_time = config.level[level].level_max_time
 
         self._build_world()
         self._build_hud()
@@ -217,7 +219,7 @@ class MazeGameSession(Entity):
             score=0,
             lives=self.lives,
             level=self.nb_level,
-            remaining_time=float(self.config.level_max_time),
+            remaining_time=float(self.level_max_time),
             countdown=True,
             on_time_finished=self._time_up,
         )

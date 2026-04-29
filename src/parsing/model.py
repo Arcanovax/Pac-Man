@@ -122,7 +122,7 @@ class ConfigModel(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def load_highscore(self):
+    def load_highscore(self) -> Any:
         try:
             with open(self.highscore_filename, "r") as f:
                 self.highscore = sorted(

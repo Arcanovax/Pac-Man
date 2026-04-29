@@ -26,7 +26,7 @@ class Ghost(Entity):
         maze_grid: list[list[int]],
         scatter_target: GridPos,
         player: Entity,
-        ghost_color,
+        ghost_color: str,
         speed: float = 4.4,
     ):
         spawn_world = Vec3(
@@ -190,7 +190,6 @@ class Ghost(Entity):
             self.position.z,
         )
         self.rotation = (0, 0, 0)
-
 
     def on_eaten(self, respawn_delay: float = 3.0) -> None:
         self.state = STATE_EATEN
