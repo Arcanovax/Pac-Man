@@ -16,7 +16,7 @@ class Blinky(Ghost):
     ):
         """
         Initialize Blinky ghost.
-        
+
         Args:
             spawn_coords: Grid coordinates where Blinky spawns.
             tile_size: Size of each grid tile in world units.
