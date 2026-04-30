@@ -13,8 +13,8 @@ class Inky(Ghost):
         scatter_target: tuple[int, int],
         player,
     ):
-        self.blips = load_texture("assets/textures/cyan_ghost.png")
-
+        self.model_base = "assets/models/ghost_cyan.glb"
+        self.blips_base = load_texture("assets/textures/cyan_ghost.png")
         super().__init__(
             name="Inky",
             spawn_coords=spawn_coords,
@@ -23,9 +23,10 @@ class Inky(Ghost):
             maze_grid=maze_grid,
             scatter_target=scatter_target,
             player=player,
-            model="assets/models/ghost_cyan.glb",
+            model=self.model_base,
             speed=4.35,
         )
+        self.blips = self.blips_base
 
     def get_chase_target(self, blinky: Any = None) -> tuple[int, int]:
         ahead = self.player.position + (

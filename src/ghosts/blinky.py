@@ -12,8 +12,8 @@ class Blinky(Ghost):
         scatter_target: tuple[int, int],
         player,
     ):
-        self.blips = load_texture("assets/textures/red_ghost.png")
-
+        self.model_base = "assets/models/ghost_red.glb"
+        self.blips_base = load_texture("assets/textures/red_ghost.png")
         super().__init__(
             name="Blinky",
             spawn_coords=spawn_coords,
@@ -22,6 +22,7 @@ class Blinky(Ghost):
             maze_grid=maze_grid,
             scatter_target=scatter_target,
             player=player,
-            model="assets/models/ghost_red.glb",
+            model=self.model_base,
             speed=4.7,
         )
+        self.blips = self.blips_base

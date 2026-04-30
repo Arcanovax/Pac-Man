@@ -183,7 +183,8 @@ class Ghost(Entity):
         self.state = STATE_FRIGHTENED
         self._frightened_timer = max(self._frightened_timer, float(duration))
         self.speed = self.base_speed * FRIGHTENED_SPEED_FACTOR
-        self.color = color.azure
+        self.model = "assets/models/ghost_vulnerable.glb"
+        self.blips = "assets/textures/ghost_vulnerable.png"
         self._path_refresh_cd = (
             PATH_REFRESH_INTERVAL * FRIGHTENED_PATH_REFRESH_MULTIPLIER
         )
@@ -209,6 +210,8 @@ class Ghost(Entity):
             self.position.y,
             self.position.z,
         )
+        self.model = self.model_base
+        self.blips = self.blips_base
 
     def on_eaten(self, respawn_delay: float = 3.0) -> None:
         self.state = STATE_EATEN
@@ -287,6 +290,8 @@ class Ghost(Entity):
                 self.state = STATE_CHASE
                 self.speed = self.base_speed
                 self.color = rgba32(r=255, g=255, b=255, a=255)
+                self.model = self.model_base
+                self.blips = self.blips_base
 
         current = self._closest_walkable(self._world_to_grid(self.position))
         target_raw = self._select_target(blinky)
