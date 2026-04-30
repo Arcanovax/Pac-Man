@@ -271,7 +271,6 @@ class MazeGameSession(Entity):
         return False
 
     def _toggle_pause_menu(self):
-        """Toggle the pause menu"""
         if self.ended:
             return
         
@@ -281,46 +280,37 @@ class MazeGameSession(Entity):
             self._pause_game()
 
     def _pause_game(self):
-        """Pause the game and show pause menu"""
         self.is_paused = True
 
         if self._show_cheats:
             self._toogle_cheat_menu()
-        
-        # Disable player input and movement
+
         self.player.enabled = False
-        
-        # Disable ghost updates
+
         for ghost in self.ghosts:
             ghost.enabled = False
-        
-        # Create and show pause menu
+
         def on_resume():
             self._resume_game()
-        
+
         def on_quit():
-            # Close game session and return to main menu
             self.ended = True
             self._freeze_gameplay()
             mouse.locked = False
             if self.on_game_over is not None:
                 self.on_game_over(self.score)
-        
+
         self.pause_manager = PauseMenuManager(None)
         self.pause_manager.show(on_resume, on_quit)
 
     def _resume_game(self):
-        """Resume the game and hide pause menu"""
         self.is_paused = False
-        
-        # Re-enable player input and movement
+
         self.player.enabled = True
-        
-        # Re-enable ghost updates
+
         for ghost in self.ghosts:
             ghost.enabled = True
-        
-        # Hide pause menu
+
         if self.pause_manager:
             self.pause_manager.hide()
             self.pause_manager = None
