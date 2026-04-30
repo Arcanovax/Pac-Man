@@ -55,6 +55,8 @@ class ConfigModel(BaseModel):
     points_per_ghost: int = Field(gt=0, default=200)
     seed: int = Field(default=42)
     highscore: list[dict[str, int | str]] = Field(default=[])
+    mouse_sensitivity: float = Field(default=80.0)
+    fov: float = Field(default=90.0)
 
     def __str__(self) -> str:
         return (
@@ -82,6 +84,27 @@ class ConfigModel(BaseModel):
 
         try:
             v = int(v)
+        except Exception:
+            Logger.warning(f"'{field_name}' invalid, using default")
+            return cls.model_fields[field_name].default
+
+        if v <= 0:
+            Logger.warning(f"'{field_name}' must be > 0, using default")
+            return cls.model_fields[field_name].default
+
+        return v
+
+    @field_validator(
+        "mouse_sensitivity",
+        "fov",
+        mode="before"
+    )
+    @classmethod
+    def _validate_float_positive(cls, v: Any, info: Any) -> Any:
+        field_name = info.field_name
+
+        try:
+            v = float(v)
         except Exception:
             Logger.warning(f"'{field_name}' invalid, using default")
             return cls.model_fields[field_name].default
