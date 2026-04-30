@@ -107,7 +107,7 @@ class MiniMap(Entity):
         for ghost, marker in self.ghost_markers.items():
             marker.position = ghost.position
             marker.visible = ghost.visible
-            marker.color = ghost.color
+            marker.texture = ghost.model_minimap
 
     def get_ui_map(self):
         return self.minimap_walls
