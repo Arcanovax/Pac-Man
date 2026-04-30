@@ -17,6 +17,7 @@ from .maze_3d import Maze_3d
 from .minimap import MiniMap
 from .player_controller import PlayerController
 from .pacgums import Pacgums_Manager
+from ..parsing.model import ConfigModel
 from ..ghosts.ghost import (
     STATE_EATEN,
     STATE_FRIGHTENED,
@@ -29,15 +30,16 @@ from ..ui.menu.hud import HUDTemplate
 from ..ui.menu.cheat_menu import Cheat_menu
 from ..ui.menu.cheat_menu import Cheat
 from ..ui.menu.pause_menu import PauseMenuManager
+from typing import Callable, Any
 
 
-class MazeGameSession(Entity):
+class MazeGameSession(Entity):  # type: ignore
     def __init__(
         self,
-        config,
-        on_game_over=None,
-        on_victory=None,
-        player_stats=None
+        config: ConfigModel,
+        on_game_over: Callable[[int], None] | None = None,
+        on_victory: Callable[[int], None] | None = None,
+        player_stats: Any = None
     ):
         super().__init__(parent=scene)
         self.config = config
@@ -220,7 +222,7 @@ class MazeGameSession(Entity):
         self.ghosts = [self.blinky, self.pinky, self.inky, self.clyde]
         self.mini_map.attach_ghosts(self.ghosts)
 
-    def _toogle_cheat_menu(self):
+    def _toogle_cheat_menu(self) -> None:
         if self._show_cheats:
             self._close_cheat_menu()
         else:
@@ -270,16 +272,16 @@ class MazeGameSession(Entity):
 
         return False
 
-    def _toggle_pause_menu(self):
+    def _toggle_pause_menu(self) -> None:
         if self.ended:
             return
-        
+
         if self.is_paused:
             self._resume_game()
         else:
             self._pause_game()
 
-    def _pause_game(self):
+    def _pause_game(self) -> None:
         self.is_paused = True
 
         if self._show_cheats:
@@ -290,10 +292,10 @@ class MazeGameSession(Entity):
         for ghost in self.ghosts:
             ghost.enabled = False
 
-        def on_resume():
+        def on_resume() -> None:
             self._resume_game()
 
-        def on_quit():
+        def on_quit() -> None:
             self.ended = True
             self._freeze_gameplay()
             mouse.locked = False
@@ -303,7 +305,7 @@ class MazeGameSession(Entity):
         self.pause_manager = PauseMenuManager(None)
         self.pause_manager.show(on_resume, on_quit)
 
-    def _resume_game(self):
+    def _resume_game(self) -> None:
         self.is_paused = False
 
         self.player.enabled = True
@@ -415,7 +417,7 @@ class MazeGameSession(Entity):
                 self._on_player_hit()
             break
 
-    def _sync_lives(self):
+    def _sync_lives(self) -> None:
         if self.player.lives != self.lives:
             self.lives = max(0, int(self.player.lives))
 
@@ -452,7 +454,7 @@ class MazeGameSession(Entity):
             if self.on_victory is not None:
                 self.on_victory(self.score)
 
-    def update(self):
+    def update(self) -> None:
         if self.ended:
             return
 
@@ -493,7 +495,7 @@ class MazeGameSession(Entity):
                 destroy(entity)
         destroy(self)
 
-    def input(self, key):
+    def input(self, key) -> None:
         if key == "escape":
             self._toggle_pause_menu()
             return
@@ -506,8 +508,8 @@ class MazeGameSession(Entity):
 
 def run_main_maze(
     config,
-    on_game_over=None,
-    on_victory=None,
+    on_game_over: Callable[[int], None] | None = None,
+    on_victory: Callable[[int], None] | None = None,
     app: Ursina | None = None,
     player_stats=None
 ):

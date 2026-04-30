@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 from ursina import Entity, Text, camera, color, mouse, Button, Slider, Ursina
 from ..components import MenuButton
@@ -7,13 +7,14 @@ font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
 
 class Cheat():
-    def __init__(self, name, is_cursor=False, is_button=False):
+    def __init__(self, name: str, is_cursor: bool = False,
+                 is_button: bool = False):
         self.name = name
-        self.state = False
+        self.state: Any = False
         self.is_cursor = is_cursor
         self.is_button = is_button
 
-    def display(self, parent, i) -> None:
+    def display(self, parent: Entity, i: int) -> None:
         if self.is_cursor:
             slider_cheat(parent, self.name, i, self.change_state)
         elif self.is_button:
@@ -21,7 +22,7 @@ class Cheat():
         else:
             checkbox_cheat(parent, self.name, i, self.change_state)
 
-    def change_state(self, state) -> None:
+    def change_state(self, state: Any) -> None:
         self.state = state
 
 
