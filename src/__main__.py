@@ -27,7 +27,14 @@ def main() -> None:
     Logger.debug(str(config))
 
     print(config)
-    run_main_menu(config)
+    try:
+        run_main_menu(config)
+    except AttributeError:
+        Logger.error(
+            "Missing assets for visual representation"
+            " (you must run with uv run python pac-man.py).")
+    except Exception as e:
+        Logger.error(str(e))
 
 
 if __name__ == "__main__":

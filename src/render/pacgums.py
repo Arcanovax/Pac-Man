@@ -54,7 +54,6 @@ class Pacgum:
         self.gen_on_game()
         self.gen_on_minimap()
 
-
     def gen_on_game(self):
         self.model = Entity(
             model="sphere",

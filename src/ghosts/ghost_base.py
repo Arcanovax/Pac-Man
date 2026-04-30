@@ -161,7 +161,6 @@ class Ghost(Entity):
         return self._closest_walkable(player_cell)
 
     def _farthest_from_player(self) -> GridPos:
-        # choose the walkable cell that is farthest from the player (manhattan)
         player_cell = self._world_to_grid(self.player.position)
         best = None
         best_dist = -1
@@ -188,7 +187,6 @@ class Ghost(Entity):
         self._path_refresh_cd = (
             PATH_REFRESH_INTERVAL * FRIGHTENED_PATH_REFRESH_MULTIPLIER
         )
-        # pick an initial far target to avoid indecision at intersections
         try:
             self._current_target = self._farthest_from_player()
         except Exception:
@@ -223,8 +221,6 @@ class Ghost(Entity):
 
     def _select_target(self, blinky: Any) -> GridPos:
         if self.state == STATE_FRIGHTENED:
-            # mostly try to run as far away from the player as possible;
-            # sometimes pick a random cell to add variation
             if random.random() < 0.15:
                 return random.choice(tuple(self.walkable_cells))
             return self._farthest_from_player()
