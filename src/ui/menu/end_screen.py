@@ -14,6 +14,7 @@ from ursina import (
 from ...logger import Logger
 from ..components import MenuButton, VHSEffect
 from ..components.input import MenuInput
+from ..components.background import PacmanBackground
 
 
 def _normalize_player_name(name: str) -> str:
@@ -63,6 +64,7 @@ def _show_end_screen(
     highscore_filename: str,
     on_close: Callable[[], None] | None,
 ) -> None:
+    PacmanBackground()
     ui_entities: list[Entity] = []
     saved_once = False
     font_path = "assets/fonts/PressStart2P-vaV7.ttf"

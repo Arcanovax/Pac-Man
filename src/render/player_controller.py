@@ -1,5 +1,5 @@
 import math
-from typing import Callable, Any, Optional
+from typing import Callable, Any
 
 from ursina import (
     BoxCollider,
@@ -41,8 +41,18 @@ class PlayerController(Entity):
         self.gravity = 0
         self.collider_size = collider_size
         self.eye_height = eye_height
-        self.fov = fov
+        config_mouse_sensitivity = getattr(config, "mouse_sensitivity", None)
+        if config_mouse_sensitivity is not None:
+            mouse_sensitivity = Vec2(
+                float(config_mouse_sensitivity),
+                float(config_mouse_sensitivity),
+            )
+
+        self.fov = float(getattr(config, "fov", fov))
         self.mouse_sensitivity = mouse_sensitivity
+        self.breathing_strength = float(
+            getattr(config, "breathing_strength", 1.0)
+        )
         self.skin_width = skin_width
         self.mini_map = mini_map
         self.pacgums = pacgums
@@ -257,6 +267,8 @@ class PlayerController(Entity):
         else:
             frequency = 3.8
             amplitude = 0.008
+
+        amplitude *= self.breathing_strength
 
         self._breath_t += time.dt * frequency
         target_offset = math.sin(self._breath_t) * amplitude

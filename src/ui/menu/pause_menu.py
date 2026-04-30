@@ -61,7 +61,7 @@ class PauseMenuManager:
         self.pause_entities.extend(self._build_retro_frame())
 
         vhs = VHSEffect(intensity=0.50)
-        vhs.z = 0.05  # Ensure it's on top
+        vhs.z = 0.05
 
         title = Entity(
             parent=camera.ui,
