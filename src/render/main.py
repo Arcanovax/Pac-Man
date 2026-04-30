@@ -273,7 +273,7 @@ class MazeGameSession(Entity):
     def _toggle_pause_menu(self):
         if self.ended:
             return
-        
+
         if self.is_paused:
             self._resume_game()
         else:
