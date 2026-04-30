@@ -1,6 +1,8 @@
-from ursina import Entity, Vec3, color, Mesh
+from ursina import Entity, Vec3, color
 from random import shuffle
 from enum import Enum
+from .minimap import MiniMap
+from ..parsing.model import ConfigModel
 
 
 class Pacgum_Type(Enum):
@@ -9,14 +11,22 @@ class Pacgum_Type(Enum):
 
 
 class Pacgums_Manager():
-    def __init__(self, scale_maze, config, pacgums_zone, minimap, size, current_level):
+    def __init__(
+        self,
+        scale_maze: int,
+        config: ConfigModel,
+        pacgums_zone: list[tuple[int, int]],
+        minimap: MiniMap,
+        size: tuple[int, int],
+        current_level: int
+    ) -> None:
         self.width = size[0]
         self.height = size[1]
         self.scale = scale_maze
         self.pacgums_zone = pacgums_zone
         self.minimap = minimap
         self.nb_pacgum = config.level[current_level].pacgum
-        self.pacgums = {
+        self.pacgums: dict[str, list[Pacgum]] = {
             "normal": [],
             "super": []
         }
@@ -30,20 +40,20 @@ class Pacgums_Manager():
             pos = Vec3(self.pacgums_zone[i][0], 0.15, self.pacgums_zone[i][1])
             self.gen_pacgum(pos)
 
-    def gen_super_pacgum(self, pos):
+    def gen_super_pacgum(self, pos: Vec3) -> None:
         type = Pacgum_Type.super
-        self.pacgums.get(type.value).append(Pacgum(self, pos, type))
+        self.pacgums[type.value].append(Pacgum(self, pos, type))
         if (pos[0], pos[2]) in self.pacgums_zone:
             self.pacgums_zone.remove((pos[0], pos[2]))
 
-    def gen_pacgum(self, pos):
+    def gen_pacgum(self, pos: Vec3) -> None:
         type = Pacgum_Type.normal
-        self.pacgums.get(type.value).append(Pacgum(self, pos, type))
+        self.pacgums[type.value].append(Pacgum(self, pos, type))
 
 
 class Pacgum:
     def __init__(self, manager: Pacgums_Manager,
-                 position: Vec3, type_gum: Pacgum_Type):
+                 position: Vec3, type_gum: Pacgum_Type) -> None:
         self.position = position
         self.type_gum = type_gum
         self.manager = manager
@@ -54,7 +64,7 @@ class Pacgum:
         self.gen_on_game()
         self.gen_on_minimap()
 
-    def gen_on_game(self):
+    def gen_on_game(self) -> None:
         self.model = Entity(
             model="sphere",
             scale=self.model_scale,
@@ -63,7 +73,7 @@ class Pacgum:
             position=self.position * self.manager.scale
         )
 
-    def gen_on_minimap(self):
+    def gen_on_minimap(self) -> None:
         self.sprite = Entity(
             parent=self.manager.minimap.get_ui_map(),
             model='sphere',
@@ -72,7 +82,7 @@ class Pacgum:
             position=self.position * self.manager.scale
         )
 
-    def hide(self):
+    def hide(self) -> None:
         self.visible = False
         self.model.enabled = False
         self.sprite.enabled = False

@@ -1,15 +1,16 @@
 from ursina import Entity, camera, color, duplicate
+from .maze_3d import Maze_3d
 
 
-class MiniMap(Entity):
-    def __init__(self, maze_3d, map_scale):
+class MiniMap(Entity):  # type: ignore
+    def __init__(self, maze_3d: Maze_3d, map_scale: float):
         super().__init__(parent=camera.ui)
         self.map_scale = map_scale
         self.player_spawn = maze_3d.player_spawn
         self.ghost_markers: dict[Entity, Entity] = {}
         self.display_minimap(maze_3d.walls, map_scale)
 
-    def display_minimap(self, walls, scale):
+    def display_minimap(self, walls: Entity, scale: float) -> None:
         self.minimap_walls = duplicate(walls)
         self.minimap_walls.parent = self
         self._panel_center_x = 0.7
@@ -109,5 +110,5 @@ class MiniMap(Entity):
             marker.visible = ghost.visible
             marker.texture = ghost.blips
 
-    def get_ui_map(self):
+    def get_ui_map(self) -> Entity:
         return self.minimap_walls

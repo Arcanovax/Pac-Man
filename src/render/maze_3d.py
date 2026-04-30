@@ -2,12 +2,12 @@ from ursina import Entity, Vec3, color, scene
 
 
 class Maze_3d():
-    def __init__(self, maze, scale):
+    def __init__(self, maze: list[list[int]], scale: int):
         self.maze = maze
         self.scale = scale
-        self.walls_entity = []
-        self.floors = []
-        self.pacgums_zone = []
+        self.walls_entity: list[Entity] = []
+        self.floors: list[Entity] = []
+        self.pacgums_zone: list[tuple[int, int]] = []
         self.walls = Entity(parent=scene)
         for y in range(len(maze)):
             for x in range(len(maze[y])):
@@ -16,7 +16,6 @@ class Maze_3d():
         self.x = x
         self.walls.combine()
         self.walls.texture = "assets/textures/wall.jpg"
-
 
         self.gen_floor(x, y, 0, scale)
         self.gen_floor(x, y, 4, scale)
@@ -36,7 +35,7 @@ class Maze_3d():
             "NB": val
         }
 
-    def gen_floor(self, x, y, hight, scale):
+    def gen_floor(self, x: int, y: int, hight: float, scale: float) -> Entity:
         Entity_position = ((x/2)*scale, hight, (-y/2)*scale)
         Entity_scale = ((x+1)*scale, 1, (-y-1)*scale)
         floor_texture_path = "assets/textures/floor.jpg"
@@ -51,7 +50,8 @@ class Maze_3d():
         self.floors.append(floor_entity)
         return floor_entity
 
-    def gen_wall(self, position, scale):
+    def gen_wall(self, position: tuple[float, int, float],
+                 scale: tuple[float, float, float]) -> Entity:
         wall_texture_path = "assets/textures/wall.jpg"
         wall_position = (position[0] * self.scale,
                          position[1],
@@ -80,7 +80,7 @@ class Maze_3d():
             parent=self.walls
         )
 
-    def create_walls(self, x, y):
+    def create_walls(self, x: int, y: int) -> None:
         y = -y
         walls = self.get_walls(self.maze[-y][x])
         pos = [model.position for model in self.walls_entity]
