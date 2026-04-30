@@ -4,6 +4,11 @@ from .ghost_base import Ghost
 
 
 class Clyde(Ghost):
+    """Orange ghost with a shy/ambivalent chase behavior.
+
+    Clyde either chases the player or scatters to its corner depending on
+    the distance to the player.
+    """
     def __init__(
         self,
         spawn_coords: tuple[int, int],
@@ -29,6 +34,11 @@ class Clyde(Ghost):
         self.blips = self.blips_base
 
     def get_chase_target(self, blinky: Any = None) -> tuple[int, int]:
+        """Return Clyde's chase target cell.
+
+        If Clyde is within a short distance of the player it will retreat to
+        its scatter target; otherwise it will chase the player's cell.
+        """
         player_cell = self._player_grid()
         own_cell = self._closest_walkable(self._world_to_grid(self.position))
         dist = (

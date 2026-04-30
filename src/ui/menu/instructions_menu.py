@@ -3,6 +3,7 @@ from .overlay_menu import OverlayMenuManager
 
 
 def show_instructions_menu(overlay: OverlayMenuManager) -> None:
+    """Open the instructions overlay explaining basic controls and goals."""
     overlay.show(
         "INSTRUCTIONS",
         [

@@ -4,7 +4,7 @@ from collections import deque
 from typing import Any
 from ursina.color import rgba32
 
-from ursina import Entity, Vec3, color, time
+from ursina import Entity, Vec3, time
 
 GridPos = tuple[int, int]
 
@@ -18,6 +18,12 @@ FRIGHTENED_PATH_REFRESH_MULTIPLIER = 2
 
 
 class Ghost(Entity):
+    """
+    Base class for ghost entities in the Pac-Man game.
+
+    Handles ghost behavior including pathfinding, movement, state management,
+    and interaction with the player and environment.
+    """
     def __init__(
         self,
         name: str,
@@ -30,6 +36,20 @@ class Ghost(Entity):
         model: str,
         speed: float = 4.4,
     ):
+        """
+        Initialize a Ghost entity.
+
+        Args:
+            name: The name of the ghost.
+            spawn_coords: Grid coordinates where the ghost spawns.
+            tile_size: Size of each grid tile in world units.
+            walkable_cells: Set of grid cells the ghost can traverse.
+            maze_grid: 2D grid representing maze walls in binary format.
+            scatter_target: Grid coordinates for scatter mode target.
+            player: Reference to the player entity.
+            model: Path to the 3D model file for the ghost.
+            speed: Movement speed of the ghost in units per second.
+        """
         spawn_world = Vec3(
             spawn_coords[0] * tile_size,
             1.2,
@@ -69,6 +89,7 @@ class Ghost(Entity):
         self.is_trigger = True
 
     def _grid_to_world(self, x: int, y: int) -> Vec3:
+        """Convert grid coordinates to world coordinates."""
         return Vec3(
             x * self.tile_size,
             1.2,
@@ -76,12 +97,14 @@ class Ghost(Entity):
         )
 
     def _world_to_grid(self, world_pos: Vec3) -> GridPos:
+        """Convert world coordinates to grid coordinates."""
         return (
             int(round(world_pos.x / self.tile_size)),
             int(round(world_pos.z / self.tile_size)),
         )
 
     def _closest_walkable(self, target: GridPos) -> GridPos:
+        """Find the closest walkable cell to the target cell."""
         if target in self.walkable_cells:
             return target
         return min(
@@ -93,6 +116,7 @@ class Ghost(Entity):
         )
 
     def _near_cell(self, cell: GridPos) -> list[GridPos]:
+        """Get neighboring cells that are not blocked by walls."""
         x_pos, y_pos = cell
         row = -y_pos
         if (
@@ -126,6 +150,7 @@ class Ghost(Entity):
         start: GridPos,
         goal: GridPos,
     ) -> list[GridPos]:
+        """Build a path from start to goal using BFS algorithm."""
         if start == goal:
             return [start]
 
@@ -157,10 +182,12 @@ class Ghost(Entity):
         return path
 
     def _player_grid(self) -> GridPos:
+        """Get the grid cell of the player."""
         player_cell = self._world_to_grid(self.player.position)
         return self._closest_walkable(player_cell)
 
     def _farthest_from_player(self) -> GridPos:
+        """Find the walkable cell farthest from the player."""
         player_cell = self._world_to_grid(self.player.position)
         best = None
         best_dist = -1
@@ -174,9 +201,11 @@ class Ghost(Entity):
         return self._player_grid()
 
     def get_chase_target(self, blinky: Any = None) -> GridPos:
+        """Get the target cell for chase mode."""
         return self._player_grid()
 
     def set_frightened(self, duration: float) -> None:
+        """Set the ghost to frightened mode for the specified duration."""
         if self.state == STATE_EATEN:
             return
         self.state = STATE_FRIGHTENED
@@ -193,6 +222,7 @@ class Ghost(Entity):
             self._current_target = None
 
     def reset_to_spawn(self) -> None:
+        """Reset the ghost to its spawn location and default state."""
         self.state = STATE_CHASE
         self.speed = self.base_speed
         self._frightened_timer = 0.0
@@ -212,6 +242,7 @@ class Ghost(Entity):
         self.blips = self.blips_base
 
     def on_eaten(self, respawn_delay: float = 3.0) -> None:
+        """Mark the ghost as eaten and set respawn delay."""
         self.state = STATE_EATEN
         self._respawn_timer = max(0.1, float(respawn_delay))
         self.enabled = True
@@ -220,6 +251,7 @@ class Ghost(Entity):
         self._current_target = None
 
     def _select_target(self, blinky: Any) -> GridPos:
+        """Select target based on current ghost state."""
         if self.state == STATE_FRIGHTENED:
             if random.random() < 0.15:
                 return random.choice(tuple(self.walkable_cells))
@@ -227,6 +259,7 @@ class Ghost(Entity):
         return self.get_chase_target(blinky)
 
     def _face_movement(self) -> None:
+        """Orient the ghost to face its direction of movement."""
         direction = self.position - self.last_position
         direction.y = 0
         if direction.length() < 0.001:
@@ -244,6 +277,7 @@ class Ghost(Entity):
         self.rotation_y = target_yaw
 
     def _move_on_path(self) -> None:
+        """Move the ghost along its calculated path."""
         if len(self.path) < 2:
             return
 
@@ -267,6 +301,7 @@ class Ghost(Entity):
         self.position += direction * max_step
 
     def update_ai(self, blinky: Any = None) -> None:
+        """Update ghost AI behavior and movement."""
         self.last_position = Vec3(
             self.position.x,
             self.position.y,

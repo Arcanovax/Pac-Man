@@ -12,6 +12,11 @@ def _fmt_time(total_seconds: float) -> str:
 
 
 class HUDTemplate(Entity):
+    """Heads-up display template for score, lives, level and timer.
+
+    Displays formatted score, remaining time, lives and level with simple
+    animations for life loss and optional countdown behavior.
+    """
     def __init__(
         self,
         score: int = 0,
@@ -77,19 +82,23 @@ class HUDTemplate(Entity):
         self.refresh()
 
     def refresh(self) -> None:
+        """Refresh visible HUD text elements from current state values."""
         self.score_text.text = f"SCORE {self.score:06d}"
         self.time_text.text = f"TIME {_fmt_time(self.remaining_time)}"
         self.lives_text.text = f"LIVES {self.lives}"
         self.level_text.text = f"LVL {self.level:02d}"
 
     def set_score(self, value: int) -> None:
+        """Set HUD score and refresh display."""
         self.score = max(0, int(value))
         self.refresh()
 
     def add_score(self, value: int) -> None:
+        """Increment the HUD score by value (value may be negative)."""
         self.set_score(self.score + int(value))
 
     def set_lives(self, value: int) -> None:
+        """Set the HUD lives count and play loss animation if decreased."""
         previous_lives = self.lives
         self.lives = max(0, int(value))
         self.refresh()
@@ -97,9 +106,11 @@ class HUDTemplate(Entity):
             self._play_life_loss_animation()
 
     def lose_life(self) -> None:
+        """Decrease lives by one and update the HUD."""
         self.set_lives(self.lives - 1)
 
     def _play_life_loss_animation(self) -> None:
+        """Play a brief pulse and color animation for life loss feedback."""
         self.lives_text.scale = self._lives_base_scale
         self.lives_text.color = self._lives_base_color
         self.lives_text.animate_scale(
@@ -115,6 +126,7 @@ class HUDTemplate(Entity):
         invoke(self._restore_lives_text, delay=0.09)
 
     def _restore_lives_text(self) -> None:
+        """Restore lives text scale and color after the loss animation."""
         self.lives_text.animate_scale(
             self._lives_base_scale,
             duration=0.18,
@@ -127,16 +139,19 @@ class HUDTemplate(Entity):
         )
 
     def set_level(self, value: int) -> None:
+        """Set current level and refresh HUD."""
         self.level = max(1, int(value))
         self.refresh()
 
     def set_remaining_time(self, value: float) -> None:
+        """Set the remaining timer and reset finished flag if needed."""
         self.remaining_time = max(0.0, float(value))
         if self.remaining_time > 0:
             self._time_finished_called = False
         self.refresh()
 
     def add_time(self, value: float) -> None:
+        """Add (or subtract) seconds to the remaining timer."""
         self.set_remaining_time(self.remaining_time + float(value))
 
     def update_hud(
@@ -146,6 +161,7 @@ class HUDTemplate(Entity):
         level: int | None = None,
         remaining_time: float | None = None,
     ) -> None:
+        """Update multiple HUD values at once and refresh display."""
         if score is not None:
             self.score = max(0, int(score))
         if lives is not None:
@@ -159,6 +175,7 @@ class HUDTemplate(Entity):
         self.refresh()
 
     def update(self) -> None:
+        """Per-frame HUD update; advance countdown if enabled."""
         if self.countdown and self.remaining_time > 0:
             self.remaining_time = max(0.0, self.remaining_time - time.dt)
             if self.remaining_time <= 0 and not self._time_finished_called:

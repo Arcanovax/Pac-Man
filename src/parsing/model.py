@@ -12,6 +12,10 @@ from ..logger import Logger
 
 
 class LevelModel(BaseModel):
+    """Pydantic model describing a single game level configuration.
+
+    Fields include dimensions, max time for the level and number of pac-gums.
+    """
     model_config = ConfigDict(extra="ignore")
     name: str = Field(min_length=1)
     width: int = Field(gt=0, default=15)
@@ -25,6 +29,15 @@ class LevelModel(BaseModel):
     )
     @classmethod
     def _validate_positive(cls, v: Any, info: Any) -> Any:
+        """Validator to coerce a value to positive integer or use the default.
+
+        Args:
+            v: The incoming raw value to validate.
+            info: Pydantic validator info containing field metadata.
+
+        Returns:
+            A valid positive integer for the field or the field default.
+        """
         field_name = info.field_name
 
         try:
@@ -41,6 +54,10 @@ class LevelModel(BaseModel):
 
 
 class ConfigModel(BaseModel):
+    """Pydantic model representing the whole configuration object.
+
+    Contains defaults for game settings and validates numeric fields.
+    """
     model_config = ConfigDict(extra="ignore")
 
     highscore_filename: str = Field(min_length=1, default="highscore.json")
@@ -59,6 +76,10 @@ class ConfigModel(BaseModel):
     fov: float = Field(default=90.0)
 
     def __str__(self) -> str:
+        """Return a human-readable string representation of the config.
+
+        Useful for debugging and logging the current configuration.
+        """
         return (
             "Config Object: {\n"
             f"\tHighscore filename: {self.highscore_filename}\n"
@@ -80,6 +101,10 @@ class ConfigModel(BaseModel):
     )
     @classmethod
     def _validate_positive(cls, v: Any, info: Any) -> Any:
+        """Validator to ensure numeric fields are positive integers.
+
+        Mirrors the LevelModel validator behavior for other numeric fields.
+        """
         field_name = info.field_name
 
         try:

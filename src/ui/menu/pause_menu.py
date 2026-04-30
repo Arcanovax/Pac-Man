@@ -13,6 +13,11 @@ from ..components import MenuButton, VHSEffect
 
 
 class PauseMenuManager:
+    """Controls the in-game pause menu lifecycle and UI.
+
+    Responsible for showing and hiding the pause UI, wiring resume and
+    quit callbacks, and building a retro-styled frame for the menu.
+    """
     def __init__(self, app: Ursina) -> None:
         self.app = app
         self.is_paused = False
@@ -27,6 +32,7 @@ class PauseMenuManager:
         on_resume: Callable[[], None],
         on_quit_to_menu: Callable[[], None],
     ) -> None:
+        """Open the pause menu and register resume/quit callbacks."""
         if self.is_paused:
             return
 
@@ -39,6 +45,7 @@ class PauseMenuManager:
         self._build_pause_ui()
 
     def hide(self) -> None:
+        """Hide the pause menu and resume gameplay."""
         if not self.is_paused:
             return
 
@@ -49,6 +56,7 @@ class PauseMenuManager:
         Logger.debug("Pause menu closed - gameplay resumed")
 
     def _clear_pause_ui(self) -> None:
+        """Destroy pause UI entities and clear internal lists."""
         for entity in self.pause_entities:
             destroy(entity)
         self.pause_entities.clear()
@@ -58,6 +66,7 @@ class PauseMenuManager:
         self.pause_buttons.clear()
 
     def _build_pause_ui(self) -> None:
+        """Construct the pause menu UI and wire button callbacks."""
         self.pause_entities.extend(self._build_retro_frame())
 
         vhs = VHSEffect(intensity=0.50)

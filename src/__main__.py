@@ -6,6 +6,12 @@ from .ui.menu import run_main_menu
 
 
 def main() -> None:
+    """Entry point for the package when executed as a module.
+
+    Parses a single optional command-line argument for a config path,
+    loads the configuration and launches the main menu.
+    """
+
     if len(argv) > 2:
         Logger.error("Too many arguments provided. Using the first one.")
         return

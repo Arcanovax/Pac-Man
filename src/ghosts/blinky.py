@@ -4,6 +4,7 @@ from typing import Any
 
 
 class Blinky(Ghost):
+    """Red ghost that directly chases the player."""
     def __init__(
         self,
         spawn_coords: tuple[int, int],
@@ -13,6 +14,17 @@ class Blinky(Ghost):
         scatter_target: tuple[int, int],
         player: Any,
     ):
+        """
+        Initialize Blinky ghost.
+        
+        Args:
+            spawn_coords: Grid coordinates where Blinky spawns.
+            tile_size: Size of each grid tile in world units.
+            walkable_cells: Set of grid cells Blinky can traverse.
+            maze_grid: 2D grid representing maze walls in binary format.
+            scatter_target: Grid coordinates for scatter mode target.
+            player: Reference to the player entity.
+        """
         self.model_base = "assets/models/ghost_red.glb"
         self.blips_base = load_texture("assets/textures/red_ghost.png")
         super().__init__(

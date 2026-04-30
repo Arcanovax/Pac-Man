@@ -1,4 +1,8 @@
 class Color:
+    """ANSI color and style escape sequences used by the Logger.
+
+    This class only provides constants and does not implement logic.
+    """
     RESET = "\033[0m"
 
     BOLD = "\033[1m"

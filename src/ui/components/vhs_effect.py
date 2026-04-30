@@ -7,6 +7,11 @@ from ursina import Entity, camera, color as colors, time
 
 
 class VHSEffect(Entity):
+    """Visual overlay that simulates old VHS artifacts.
+
+    Adds scanlines, noise bands and subtle jitter to the UI to create a
+    retro feel. Intensity controls strength of visual effects.
+    """
     def __init__(self, intensity: float = 1.0) -> None:
         super().__init__(parent=camera.ui)
 
@@ -64,6 +69,10 @@ class VHSEffect(Entity):
         self._scanlines = self._create_scanlines()
 
     def _create_scanlines(self) -> list[Entity]:
+        """Create and return the list of scanline entities.
+
+        Also stores the base y positions for later animation.
+        """
         lines: list[Entity] = []
         step = 0.034
 
@@ -84,6 +93,7 @@ class VHSEffect(Entity):
         return lines
 
     def update(self) -> None:
+        """Advance overlay animation: jitter, noise band and scanlines."""
         self._t += time.dt
         self._jitter_timer += time.dt
 

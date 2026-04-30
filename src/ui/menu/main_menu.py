@@ -20,6 +20,12 @@ from .player_stats import Player_Stats
 
 
 def run_main_menu(config: Any) -> None:
+    """Create and run the main menu application.
+
+    Initializes an Ursina app, builds the menu UI from `config` and
+    starts the main application loop.
+    """
+
     app = Ursina(
         borderless=False,
         title="Pac-Man",
@@ -35,6 +41,12 @@ def run_main_menu(config: Any) -> None:
 
 
 def _build_menu_ui(app: Ursina, config: Any) -> None:
+    """Construct the main menu UI elements and wire button callbacks.
+
+    This builds the background, buttons, overlays and handles starting
+    game sessions and returning to the menu.
+    """
+
     for entity in scene.entities:
         if entity != camera and entity != camera.ui:
             destroy(entity)
@@ -138,6 +150,8 @@ def _build_menu_ui(app: Ursina, config: Any) -> None:
 
 
 def _build_retro_frame() -> list[Entity]:
+    """Return a list of decorative entities forming a retro UI frame."""
+
     frame_entities: list[Entity] = []
 
     frame_entities.append(Entity(
