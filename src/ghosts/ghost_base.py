@@ -39,7 +39,7 @@ class Ghost(Entity):
         super().__init__(
             name=name,
             model=model,
-            scale=(15.0, 15.0, 15.0),
+            scale=(20.0, 20.0, 20.0),
             position=spawn_world,
             collider="box",
         )

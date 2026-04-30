@@ -79,8 +79,9 @@ class PlayerController(Entity):
             self.speed = self.cheats_menu.get_cheat("speed").state
 
     def _handle_lives_cheat(self):
-        if (self.cheats_menu.get_cheat("extra_lives").state):
-            self.cheats_menu.get_cheat("extra_lives").state = False
+        extra_lives_cheat = self.cheats_menu.get_cheat("extra_lives")
+        if extra_lives_cheat.state > 0:
+            extra_lives_cheat.state -= 1
             self.lives += 1
 
     def _axis_direction(self, axis: str, delta: float) -> Vec3:

@@ -28,6 +28,7 @@ from ..ghosts.ghost import (
 from ..ui.menu.hud import HUDTemplate
 from ..ui.menu.cheat_menu import Cheat_menu
 from ..ui.menu.cheat_menu import Cheat
+from ..ui.menu.pause_menu import PauseMenuManager
 
 
 class MazeGameSession(Entity):
@@ -60,6 +61,19 @@ class MazeGameSession(Entity):
         self.power_mode_timer = 0.0
         self.invulnerable_timer = 1.5
         self.level_max_time = config.level[level].level_max_time
+        self.pause_manager = None
+        self.is_paused = False
+        self._cheat_unlock_sequence = (
+            "up arrow",
+            "up arrow",
+            "down arrow",
+            "down arrow",
+            "left arrow",
+            "right arrow",
+            "left arrow",
+            "right arrow",
+        )
+        self._cheat_input_buffer: list[str] = []
 
         self._build_world()
         self._build_hud()
@@ -150,7 +164,7 @@ class MazeGameSession(Entity):
             1 for gum in self.pacgums.pacgums.get("super", []) if gum.visible
         )
 
-        self.cheats_menu = Cheat_menu()
+        self.cheats_menu = Cheat_menu(on_exit=self._close_cheat_menu)
         for i, cheat in enumerate(self.cheats):
             self.cheats_menu.add_cheat(cheat, i)
         self.cheats_menu.hide()
@@ -208,11 +222,108 @@ class MazeGameSession(Entity):
 
     def _toogle_cheat_menu(self):
         if self._show_cheats:
-            self._show_cheats = False
-            self.cheats_menu.hide()
+            self._close_cheat_menu()
         else:
             self._show_cheats = True
             self.cheats_menu.show()
+            self._set_cheat_freeze(True)
+
+    def _close_cheat_menu(self) -> None:
+        if not self._show_cheats:
+            return
+        self._show_cheats = False
+        self.cheats_menu.hide()
+        self._set_cheat_freeze(False)
+
+    def _set_cheat_freeze(self, frozen: bool) -> None:
+        if self.ended:
+            return
+
+        if frozen:
+            self.player.enabled = False
+            self.hud.countdown = False
+            for ghost in self.ghosts:
+                ghost.enabled = False
+            return
+
+        if self.is_paused:
+            return
+
+        self.player.enabled = True
+        self.hud.countdown = True
+        for ghost in self.ghosts:
+            ghost.enabled = True
+
+    def _track_cheat_sequence(self, key: str) -> bool:
+        if key not in ("up arrow", "down arrow", "left arrow", "right arrow"):
+            return False
+
+        self._cheat_input_buffer.append(key)
+        max_len = len(self._cheat_unlock_sequence)
+        if len(self._cheat_input_buffer) > max_len:
+            self._cheat_input_buffer = self._cheat_input_buffer[-max_len:]
+
+        if tuple(self._cheat_input_buffer) == self._cheat_unlock_sequence:
+            self._cheat_input_buffer.clear()
+            self._toogle_cheat_menu()
+            return True
+
+        return False
+
+    def _toggle_pause_menu(self):
+        """Toggle the pause menu"""
+        if self.ended:
+            return
+        
+        if self.is_paused:
+            self._resume_game()
+        else:
+            self._pause_game()
+
+    def _pause_game(self):
+        """Pause the game and show pause menu"""
+        self.is_paused = True
+
+        if self._show_cheats:
+            self._toogle_cheat_menu()
+        
+        # Disable player input and movement
+        self.player.enabled = False
+        
+        # Disable ghost updates
+        for ghost in self.ghosts:
+            ghost.enabled = False
+        
+        # Create and show pause menu
+        def on_resume():
+            self._resume_game()
+        
+        def on_quit():
+            # Close game session and return to main menu
+            self.ended = True
+            self._freeze_gameplay()
+            mouse.locked = False
+            if self.on_game_over is not None:
+                self.on_game_over(self.score)
+        
+        self.pause_manager = PauseMenuManager(None)
+        self.pause_manager.show(on_resume, on_quit)
+
+    def _resume_game(self):
+        """Resume the game and hide pause menu"""
+        self.is_paused = False
+        
+        # Re-enable player input and movement
+        self.player.enabled = True
+        
+        # Re-enable ghost updates
+        for ghost in self.ghosts:
+            ghost.enabled = True
+        
+        # Hide pause menu
+        if self.pause_manager:
+            self.pause_manager.hide()
+            self.pause_manager = None
 
     def _build_hud(self) -> None:
         self.hud = HUDTemplate(
@@ -355,6 +466,9 @@ class MazeGameSession(Entity):
         if self.ended:
             return
 
+        if self.is_paused or self._show_cheats:
+            return
+
         if self.invulnerable_timer > 0:
             self.invulnerable_timer = max(
                 0.0,
@@ -391,7 +505,13 @@ class MazeGameSession(Entity):
 
     def input(self, key):
         if key == "escape":
-            self._toogle_cheat_menu()
+            self._toggle_pause_menu()
+            return
+
+        if self.ended or self.is_paused:
+            return
+
+        self._track_cheat_sequence(key)
 
 
 def run_main_maze(
