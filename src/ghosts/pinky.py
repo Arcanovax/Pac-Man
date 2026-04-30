@@ -11,7 +11,7 @@ class Pinky(Ghost):
         walkable_cells: set[tuple[int, int]],
         maze_grid: list[list[int]],
         scatter_target: tuple[int, int],
-        player,
+        player: Any,
     ):
         self.model_base = "assets/models/ghost_pink.glb"
         self.blips_base = load_texture("assets/textures/pink_ghost.png")

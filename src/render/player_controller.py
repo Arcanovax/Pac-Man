@@ -1,5 +1,5 @@
 import math
-from typing import Callable, Any
+from typing import Callable, Any, Optional
 
 from ursina import (
     BoxCollider,
@@ -29,13 +29,13 @@ class PlayerController(Entity):
         fov: float = 100,
         mouse_sensitivity: Vec2 = Vec2(40, 40),
         skin_width: float = 0.04,
-        mini_map=None,
-        cheats_menu=None,
-        maze_3d=None,
-        config=None,
+        mini_map: Any = None,
+        cheats_menu: Any = None,
+        maze_3d: Any = None,
+        config: Any = None,
         pacgums: dict | None = None,
         hit_ghost: Callable[[], None] | None = None,
-    ):
+    ) -> None:
         super().__init__()
         self.speed = speed
         self.gravity = 0
@@ -74,11 +74,11 @@ class PlayerController(Entity):
             size=self.collider_size,
         )
 
-    def _handle_speed_cheat(self):
+    def _handle_speed_cheat(self) -> None:
         if (self.cheats_menu.get_cheat("speed").state):
             self.speed = self.cheats_menu.get_cheat("speed").state
 
-    def _handle_lives_cheat(self):
+    def _handle_lives_cheat(self) -> None:
         extra_lives_cheat = self.cheats_menu.get_cheat("extra_lives")
         if extra_lives_cheat.state > 0:
             extra_lives_cheat.state -= 1
@@ -90,7 +90,7 @@ class PlayerController(Entity):
             return -direction
         return direction
 
-    def _axis_half_width(self, axis: str) -> float:
+    def _axis_half_width(self, axis: str) -> Any:
         if axis == AXIS_X:
             return self.collider_size.x / 2
         return self.collider_size.z / 2
@@ -127,7 +127,7 @@ class PlayerController(Entity):
 
         return False
 
-    def _handle_noclip(self, axis, delta):
+    def _handle_noclip(self, axis: str, delta: float) -> bool:
         if (self.cheats_menu.get_cheat("no_clip").state):
             if axis == 'x':
                 wall_limit = self.maze_3d.x * self.maze_3d.scale
@@ -137,6 +137,7 @@ class PlayerController(Entity):
                 wall_limit = -self.maze_3d.y * self.maze_3d.scale
                 if wall_limit < self.position.z + delta < 0:
                     return True
+        return False
 
     def _move_axis(self, axis: str, delta: float) -> None:
         if self._axis_blocked(axis, delta):
@@ -147,7 +148,7 @@ class PlayerController(Entity):
 
         setattr(self, axis, getattr(self, axis) + delta)
 
-    def _walls_limits(self, axis: str, delta: float):
+    def _walls_limits(self, axis: str, delta: float) -> bool:
         next_pos = getattr(self.position, axis) + delta
         if axis == 'x':
             wall_limit = self.maze_3d.x * self.maze_3d.scale
@@ -158,10 +159,6 @@ class PlayerController(Entity):
             if next_pos < wall_limit - 1 or next_pos > 1:
                 return True
         return False
-
-    def _rotate_camera(self):
-        if self.cheats_menu.menu.enabled is True:
-            return
 
     def _mouse_look(self) -> None:
         self.rotation_y += mouse.velocity[0] * self.mouse_sensitivity[0]
@@ -199,7 +196,6 @@ class PlayerController(Entity):
         self._mouse_look()
         is_moving = self._move_player(self._movement_input())
 
-        self._rotate_camera()
         self._minimap_rotate_player()
         self._handle_pacgums_collisions()
         self._handle_lives_cheat()
@@ -213,7 +209,7 @@ class PlayerController(Entity):
         else:
             model.color = color.white
 
-    def _is_inside_square(self, target_pos: Vec3, half_size: float) -> bool:
+    def _is_inside_square(self, target_pos: Vec3, half_size: float) -> Any:
         return (
             self.position.x <= target_pos.x + half_size and
             self.position.x >= target_pos.x - half_size and

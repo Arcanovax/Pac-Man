@@ -125,7 +125,7 @@ class MenuInput(InputField):
         self._cursor_blink_time = 0
         self._cursor_visible = True
 
-    def input(self, key):
+    def input(self, key) -> None:
         super().input(key)
 
         if not self.active and key in ('left mouse down', 'tab'):

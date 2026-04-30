@@ -1,5 +1,6 @@
 from ursina import load_texture
 from .ghost_base import Ghost
+from typing import Any
 
 
 class Blinky(Ghost):
@@ -10,7 +11,7 @@ class Blinky(Ghost):
         walkable_cells: set[tuple[int, int]],
         maze_grid: list[list[int]],
         scatter_target: tuple[int, int],
-        player,
+        player: Any,
     ):
         self.model_base = "assets/models/ghost_red.glb"
         self.blips_base = load_texture("assets/textures/red_ghost.png")
