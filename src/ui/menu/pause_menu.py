@@ -151,13 +151,3 @@ class PauseMenuManager:
         ))
 
         return frame_entities
-
-
-def show_pause_menu(
-    app: Ursina,
-    on_resume: Callable[[], None],
-    on_quit_to_menu: Callable[[], None],
-) -> PauseMenuManager:
-    pause_manager = PauseMenuManager(app)
-    pause_manager.show(on_resume, on_quit_to_menu)
-    return pause_manager
