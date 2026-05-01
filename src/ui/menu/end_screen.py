@@ -14,6 +14,7 @@ from ursina import (
 from ...logger import Logger
 from ..components import MenuButton, VHSEffect
 from ..components.input import MenuInput
+from ..components.background import PacmanBackground
 
 
 def _normalize_player_name(name: str) -> str:
@@ -29,6 +30,15 @@ def _save_highscore(
     final_score: int,
     highscore_filename: str,
 ) -> list[dict[str, int | str]]:
+    """Append a new score entry and persist the top 10 list.
+
+    Normalizes the player name, inserts the new score into the list,
+    sorts by score descending, trims to the top 10 and writes the
+    result to `highscore_filename`.
+
+    Returns the updated highscore list.
+    """
+
     entry: dict[str, int | str] = {
         "name": _normalize_player_name(player_name),
         "score": max(0, int(final_score)),
@@ -63,6 +73,13 @@ def _show_end_screen(
     highscore_filename: str,
     on_close: Callable[[], None] | None,
 ) -> None:
+    """Render an end-of-game UI panel allowing the player to save score.
+
+    Displays title, subtitle, final score and an input to enter a name.
+    Provides buttons to save the score or continue/close the screen.
+    """
+
+    PacmanBackground()
     ui_entities: list[Entity] = []
     saved_once = False
     font_path = "assets/fonts/PressStart2P-vaV7.ttf"
@@ -195,6 +212,7 @@ def show_game_over_screen(
     on_close: Callable[[], None] | None = None,
     highscore_filename: str = "highscore.json",
 ) -> None:
+    """Convenience wrapper to show the 'game over' end screen."""
     _show_end_screen(
         title="GAME OVER",
         subtitle="TRY AGAIN NEXT RUN",
@@ -211,6 +229,7 @@ def show_victory_screen(
     on_close: Callable[[], None] | None = None,
     highscore_filename: str = "highscore.json",
 ) -> None:
+    """Convenience wrapper to show the victory end screen."""
     _show_end_screen(
         title="VICTORY",
         subtitle="CONGRATULATIONS! YOU WON!",
@@ -222,6 +241,11 @@ def show_victory_screen(
 
 
 def _run_test_main() -> None:
+    """Run a standalone test harness that displays the end screens.
+
+    This helper is intended for local testing and demoing the UI only.
+    """
+
     app = Ursina(
         borderless=False,
         title="Pac-Man End Screen Test",

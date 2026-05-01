@@ -12,6 +12,10 @@ from ..logger import Logger
 
 
 class LevelModel(BaseModel):
+    """Pydantic model describing a single game level configuration.
+
+    Fields include dimensions, max time for the level and number of pac-gums.
+    """
     model_config = ConfigDict(extra="ignore")
     name: str = Field(min_length=1)
     width: int = Field(gt=0, default=15)
@@ -25,6 +29,15 @@ class LevelModel(BaseModel):
     )
     @classmethod
     def _validate_positive(cls, v: Any, info: Any) -> Any:
+        """Validator to coerce a value to positive integer or use the default.
+
+        Args:
+            v: The incoming raw value to validate.
+            info: Pydantic validator info containing field metadata.
+
+        Returns:
+            A valid positive integer for the field or the field default.
+        """
         field_name = info.field_name
 
         try:
@@ -41,6 +54,10 @@ class LevelModel(BaseModel):
 
 
 class ConfigModel(BaseModel):
+    """Pydantic model representing the whole configuration object.
+
+    Contains defaults for game settings and validates numeric fields.
+    """
     model_config = ConfigDict(extra="ignore")
 
     highscore_filename: str = Field(min_length=1, default="highscore.json")
@@ -55,8 +72,14 @@ class ConfigModel(BaseModel):
     points_per_ghost: int = Field(gt=0, default=200)
     seed: int = Field(default=42)
     highscore: list[dict[str, int | str]] = Field(default=[])
+    mouse_sensitivity: float = Field(default=80.0)
+    fov: float = Field(default=90.0)
 
     def __str__(self) -> str:
+        """Return a human-readable string representation of the config.
+
+        Useful for debugging and logging the current configuration.
+        """
         return (
             "Config Object: {\n"
             f"\tHighscore filename: {self.highscore_filename}\n"
@@ -78,10 +101,35 @@ class ConfigModel(BaseModel):
     )
     @classmethod
     def _validate_positive(cls, v: Any, info: Any) -> Any:
+        """Validator to ensure numeric fields are positive integers.
+
+        Mirrors the LevelModel validator behavior for other numeric fields.
+        """
         field_name = info.field_name
 
         try:
             v = int(v)
+        except Exception:
+            Logger.warning(f"'{field_name}' invalid, using default")
+            return cls.model_fields[field_name].default
+
+        if v <= 0:
+            Logger.warning(f"'{field_name}' must be > 0, using default")
+            return cls.model_fields[field_name].default
+
+        return v
+
+    @field_validator(
+        "mouse_sensitivity",
+        "fov",
+        mode="before"
+    )
+    @classmethod
+    def _validate_float_positive(cls, v: Any, info: Any) -> Any:
+        field_name = info.field_name
+
+        try:
+            v = float(v)
         except Exception:
             Logger.warning(f"'{field_name}' invalid, using default")
             return cls.model_fields[field_name].default

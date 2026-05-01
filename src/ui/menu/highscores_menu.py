@@ -6,6 +6,12 @@ def show_highscores_menu(
     highscore: list[dict[str, int | str]],
     overlay: OverlayMenuManager,
 ) -> None:
+    """Prepare and display the highscores overlay.
+
+    Sorts and formats the top scores then delegates rendering to the
+    provided `overlay` manager.
+    """
+
     rows: list[str] = []
 
     try:

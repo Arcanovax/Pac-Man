@@ -4,6 +4,11 @@ from ursina import Entity, Sprite, camera, color as colors, time
 
 
 class MenuLogo(Entity):
+    """Logo entity used in menus to display and animate the game's logo.
+
+    Provides a subtle bobbing animation in `update` to give life to the
+    static logo graphic.
+    """
     def __init__(self, y: float = 0.32) -> None:
         super().__init__(parent=camera.ui)
 
@@ -29,5 +34,6 @@ class MenuLogo(Entity):
         )
 
     def update(self) -> None:
+        """Animate the logo with a small sinusoidal vertical offset."""
         self._t += time.dt
         self._logo.y = self._base_y + (math.sin(self._t * 2.0) * 0.0009)

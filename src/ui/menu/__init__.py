@@ -7,5 +7,6 @@ __all__ = [
     "run_main_menu",
     "show_game_over_screen",
     "show_victory_screen",
+    "show_settings_menu",
     "PauseMenuManager",
 ]

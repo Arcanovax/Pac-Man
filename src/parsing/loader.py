@@ -8,8 +8,21 @@ from .model import ConfigModel
 
 
 class ConfigLoader:
+    """Utility to load and validate configuration files into ConfigModel.
+
+    Provides a simple JSON loader that strips comments and returns a
+    validated `ConfigModel` instance.
+    """
     @staticmethod
     def _loadfile(file_path: str) -> Any:
+        """Read and parse a JSON config file, stripping comments.
+
+        Args:
+            file_path: Path to the JSON config file.
+
+        Returns:
+            Parsed content as Python objects, or empty dict on error.
+        """
         try:
             with open(file_path, "r") as f:
                 content = f.read()
@@ -27,6 +40,17 @@ class ConfigLoader:
 
     @staticmethod
     def load_config(file_path: str | None) -> ConfigModel:
+        """Load the configuration file and return a `ConfigModel`.
+
+        If the provided file path is None or loading/validation fails,
+        returns a default `ConfigModel` instance.
+
+        Args:
+            file_path: Optional path to the configuration file.
+
+        Returns:
+            A validated `ConfigModel` instance.
+        """
         if file_path:
             content = ConfigLoader._loadfile(file_path)
         else:

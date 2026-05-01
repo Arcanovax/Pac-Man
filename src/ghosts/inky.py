@@ -4,6 +4,11 @@ from .ghost_base import Ghost
 
 
 class Inky(Ghost):
+    """Cyan ghost with a semi-ambushing chase behavior.
+
+    Inky calculates its chase target using a position ahead of the player
+    and optionally relative to Blinky's position to form a pincer-like target.
+    """
     def __init__(
         self,
         spawn_coords: tuple[int, int],
@@ -29,6 +34,12 @@ class Inky(Ghost):
         self.blips = self.blips_base
 
     def get_chase_target(self, blinky: Any = None) -> tuple[int, int]:
+        """Return Inky's chase target cell.
+
+        If `blinky` is provided, Inky computes a target that mirrors the
+        vector from Blinky to a point ahead of the player; otherwise it
+        targets a cell two tiles ahead of the player's facing direction.
+        """
         ahead = self.player.position + (
             self.player.forward * self.tile_size * 2
         )

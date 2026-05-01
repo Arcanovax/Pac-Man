@@ -5,6 +5,12 @@ from ursina.curve import linear
 
 
 class MenuButton(Button):
+    """Styled menu button used across UI menus.
+
+    Extends Ursina's `Button` to provide a retro look, hover effects,
+    and press animations. The constructor accepts a callback executed on
+    confirmed click.
+    """
     def __init__(
         self,
         text: str,
@@ -115,12 +121,17 @@ class MenuButton(Button):
         )
 
     def _handle_click(self) -> None:
+        """Internal click handler that triggers the press animation.
+
+        Prevents re-entrancy while an animation is in progress.
+        """
         if self._is_pressed:
             return
         self._is_pressed = True
         self._animate_press()
 
     def _animate_press(self) -> None:
+        """Animate visual press state and schedule release animation."""
         self.animate_y(self._pressed_y, duration=0.07, curve=linear)
         self.animate_z(self._pressed_z, duration=0.07, curve=linear)
         self._depth.animate_color(
@@ -128,6 +139,7 @@ class MenuButton(Button):
         invoke(self._animate_release, delay=0.13)
 
     def _animate_release(self) -> None:
+        """Animate visual release and schedule final callback invocation."""
         self.animate_y(self._base_y, duration=0.10, curve=linear)
         self.animate_z(self._base_z, duration=0.10, curve=linear)
         self._depth.animate_color(
@@ -135,10 +147,12 @@ class MenuButton(Button):
         invoke(self._finish_press, delay=0.12)
 
     def _finish_press(self) -> None:
+        """Finish the press sequence and call the provided callback."""
         self._is_pressed = False
         self._on_click_callback()
 
     def on_mouse_enter(self) -> None:
+        """Handle mouse entering the button area (hover state)."""
         self.text_entity.color = self._hover_text_color
         self.color = self._hover_color
         self._frame.color = self._hover_frame_color
@@ -146,6 +160,7 @@ class MenuButton(Button):
         self._indicator.enabled = True
 
     def on_mouse_exit(self) -> None:
+        """Handle mouse exiting the button area (restore base state)."""
         self.text_entity.color = self._base_text_color
         self.color = self._base_color
         self._frame.color = self._base_frame_color

@@ -2,6 +2,11 @@ from ursina import InputField, Entity, Text, color as colors, time
 
 
 class MenuInput(InputField):
+    """Text input field styled for menu UIs.
+
+    Extends Ursina's `InputField` with a retro look, label support, and a
+    blinking cursor implementation constrained by a character limit.
+    """
     def __init__(
         self,
         default_value: str = "",
@@ -126,6 +131,11 @@ class MenuInput(InputField):
         self._cursor_visible = True
 
     def input(self, key) -> None:
+        """Process input events and manage active styling.
+
+        Activates the input when clicked or tabbed into and deactivates
+        when Escape is pressed.
+        """
         super().input(key)
 
         if not self.active and key in ('left mouse down', 'tab'):
@@ -134,6 +144,7 @@ class MenuInput(InputField):
             self._deactivate_style()
 
     def _activate_style(self) -> None:
+        """Apply active visuals when the input gains focus."""
         self.text_field.color = self._active_text_color
         self.color = self._active_color
         self._frame.color = self._active_frame_color
@@ -142,6 +153,7 @@ class MenuInput(InputField):
             self._label_entity.color = self._active_text_color
 
     def _deactivate_style(self) -> None:
+        """Restore base visuals when the input loses focus."""
         self.text_field.color = self._base_text_color
         self.color = self._base_color
         self._frame.color = self._base_frame_color
@@ -150,6 +162,7 @@ class MenuInput(InputField):
             self._label_entity.color = self._base_text_color
 
     def update(self) -> None:
+        """Update cursor blink and clamp cursor position to input width."""
         if (len(self.text) >= self.character_limit):
             self._cursor.enabled = False
         else:
@@ -170,11 +183,13 @@ class MenuInput(InputField):
             self._cursor.x = min(cursor_x, self._right_padding)
 
     def on_mouse_enter(self) -> None:
+        """Visual hint when mouse hovers over the input field."""
         if not self.active:
             self._frame.color = self._active_frame_color
             self.scale = (self._base_width * 1.01, self._base_height * 1.01)
 
     def on_mouse_exit(self) -> None:
+        """Restore visuals when mouse leaves the input field area."""
         if not self.active:
             self._frame.color = self._base_frame_color
             self.scale = (self._base_width, self._base_height)

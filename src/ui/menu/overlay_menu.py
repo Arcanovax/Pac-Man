@@ -4,12 +4,18 @@ from ..components import MenuButton
 
 
 class OverlayMenuManager:
+    """Manager for full-screen overlay menus (highscores, instructions).
+
+    Temporarily hides the main menu buttons and displays a scrollable
+    list of rows with a title. Provides `show` and `clear` helpers.
+    """
     def __init__(self, menu_buttons: list[MenuButton]) -> None:
         self.menu_buttons = menu_buttons
         self.overlay_entities: list[Entity] = []
         self.font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
     def clear(self) -> None:
+        """Remove the overlay entities and restore main menu buttons."""
         for entity in self.overlay_entities:
             destroy(entity)
         self.overlay_entities.clear()
@@ -19,6 +25,11 @@ class OverlayMenuManager:
             button.visible = True
 
     def show(self, title: str, rows: list[str]) -> None:
+        """Display an overlay with a title and a list of rows.
+
+        If rows exceed the visible limit, adds a small scroller input
+        handler to navigate the list.
+        """
         self.clear()
 
         for button in self.menu_buttons:

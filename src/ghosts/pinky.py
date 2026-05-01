@@ -4,6 +4,11 @@ from .ghost_base import Ghost
 
 
 class Pinky(Ghost):
+    """Pink ghost that tries to ambush the player by targeting ahead.
+
+    Pinky calculates a target several tiles in front of the player's facing
+    direction and attempts to move to that cell.
+    """
     def __init__(
         self,
         spawn_coords: tuple[int, int],
@@ -29,6 +34,11 @@ class Pinky(Ghost):
         self.blips = self.blips_base
 
     def get_chase_target(self, blinky: Any = None) -> tuple[int, int]:
+        """Return Pinky's chase target cell.
+
+        Pinky targets a cell three tiles ahead of the player's facing
+        direction.
+        """
         ahead = self.player.position + (
             self.player.forward * self.tile_size * 3
         )

@@ -30,3 +30,6 @@ lint:
 lint-strict:
 	$(UV) run flake8 $(SRC_DIR)/*.py $(MAIN_PY)
 	$(UV) run mypy $(SRC_DIR)/*.py $(MAIN_PY) --strict
+
+build:
+	$(UV) run pyinstaller --noconfirm --clean --collect-all ursina --collect-all panda3d --name pac-man --add-data "assets:assets" pac-man.py
