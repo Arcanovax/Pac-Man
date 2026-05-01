@@ -2,7 +2,18 @@ from ursina import Entity, Vec3, color, scene
 
 
 class Maze_3d():
+    """Generates and manages the 3D representation of the maze.
+
+    Builds the walls and floors based on a 2D grid data structure.
+    """
+
     def __init__(self, maze: list[list[int]], scale: int):
+        """Initializes the 3D maze.
+
+        Args:
+            maze: A 2D list of integers representing the maze structure.
+            scale: The scaling factor for the 3D models.
+        """
         self.maze = maze
         self.scale = scale
         self.walls_entity: list[Entity] = []
@@ -26,6 +37,15 @@ class Maze_3d():
         self.player_spawn = Vec3((x/2)*scale, 0, (-y/2)*scale)
 
     def get_walls(self, val: int) -> dict[str, bool | int]:
+        """Decodes the wall bitmask for a specific maze cell.
+
+        Args:
+            val: The integer value of the cell.
+
+        Returns:
+            A dictionary containing boolean flags for walls (NORTH, EAST, SOUTH, WEST)
+            and the original integer value.
+        """
         bits = f"{int(val):04b}"
         return {
             "NORTH": bits[3] == '1',
@@ -36,6 +56,17 @@ class Maze_3d():
         }
 
     def gen_floor(self, x: int, y: int, hight: float, scale: float) -> Entity:
+        """Generates a floor or ceiling for the maze.
+
+        Args:
+            x: Width coordinate size of the level.
+            y: Height coordinate size of the level.
+            hight: The Y position height of the floor entity.
+            scale: Multiplier for the dimensions.
+
+        Returns:
+            The generated Entity representing the floor.
+        """
         Entity_position = ((x/2)*scale, hight, (-y/2)*scale)
         Entity_scale = ((x+1)*scale, 1, (-y-1)*scale)
         floor_texture_path = "assets/textures/floor.jpg"
@@ -52,6 +83,15 @@ class Maze_3d():
 
     def gen_wall(self, position: tuple[float, int, float],
                  scale: tuple[float, float, float]) -> Entity:
+        """Instantiates a single wall segment in the 3D scene.
+
+        Args:
+            position: Tuple containing the (x, y, z) position coordinates.
+            scale: Tuple representing the local scale (x, y, z) multipliers.
+
+        Returns:
+            The generated Ursina Entity node.
+        """
         wall_texture_path = "assets/textures/wall.jpg"
         wall_position = (position[0] * self.scale,
                          position[1],
@@ -81,6 +121,12 @@ class Maze_3d():
         )
 
     def create_walls(self, x: int, y: int) -> None:
+        """Parses a specific coordinate and generates needed walls based on neighbors.
+
+        Args:
+            x: Default X-coordinate of a node.
+            y: Default Y-coordinate of a node.
+        """
         y = -y
         walls = self.get_walls(self.maze[-y][x])
         pos = [model.position for model in self.walls_entity]

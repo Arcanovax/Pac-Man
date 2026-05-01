@@ -4,8 +4,20 @@ from typing import Callable, Any
 font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
 class slider_cheat(Slider):  # type: ignore
+    """Custom slider button for cheat visual.
+    Args:
+        Slider: Slider from ursina
+    """
     def __init__(self, parent: Entity, name: str,
                  i: int, _change_state: Callable[[Any], None]) -> None:
+        """Init the slider button for the cheat.
+
+        Args:
+            parent (Entity): Cheat menu
+            name (str): name of the cheat
+            i (int): index of the cheat
+            _change_state (Callable[[Any], None]): function to change the state.
+        """
         self._change_state = _change_state
         self.last_value = None
         self.pos_x = 0.4
@@ -40,6 +52,8 @@ class slider_cheat(Slider):  # type: ignore
         self.knob.scale = 2
 
     def update(self) -> None:
+        """Update the value of the state of the cheat
+        """
         super().update()
         if self.value == self.last_value:
             return

@@ -3,7 +3,19 @@ from .maze_3d import Maze_3d
 
 
 class MiniMap(Entity):  # type: ignore
+    """In-game Minimap UI element overlay.
+
+    Renders a scaled-down version of the 3D level walls and tracks the player
+    and ghost entities, providing an overhead view of the map.
+    """
+
     def __init__(self, maze_3d: Maze_3d, map_scale: float):
+        """Initializes the minimap and attaches it to the camera UI.
+
+        Args:
+            maze_3d: The underlying 3D maze representation to duplicate.
+            map_scale: Value used to calculate the relative scaling inside the UI.
+        """
         super().__init__(parent=camera.ui)
         self.map_scale = map_scale
         self.player_spawn = maze_3d.player_spawn
@@ -11,6 +23,12 @@ class MiniMap(Entity):  # type: ignore
         self.display_minimap(maze_3d.walls, map_scale)
 
     def display_minimap(self, walls: Entity, scale: float) -> None:
+        """Clones the 3D map environment onto the UI screen.
+
+        Args:
+            walls: A combined entity with all walls to scale to the UI.
+            scale: Proportion ratio to properly shrink the duplicated mesh.
+        """
         self.minimap_walls = duplicate(walls)
         self.minimap_walls.parent = self
         self._panel_center_x = 0.7
@@ -94,6 +112,11 @@ class MiniMap(Entity):  # type: ignore
         )
 
     def attach_ghosts(self, ghosts: list[Entity]) -> None:
+        """Links ghost entities to matching blip icons on the minimap overlay.
+
+        Args:
+            ghosts: Active enemy ghosts playing in the maze scene.
+        """
         for ghost in ghosts:
             marker = Entity(
                 parent=self.minimap_walls,
@@ -105,10 +128,16 @@ class MiniMap(Entity):  # type: ignore
             self.ghost_markers[ghost] = marker
 
     def update_ghosts(self) -> None:
+        """Syncs the blips on the minimap with real enemy 3D coordinates."""
         for ghost, marker in self.ghost_markers.items():
             marker.position = ghost.position
             marker.visible = ghost.visible
             marker.texture = ghost.blips
 
     def get_ui_map(self) -> Entity:
+        """Retrieves the underlying UI block hosting the map scale.
+
+        Returns:
+            The minimap container Entity.
+        """
         return self.minimap_walls

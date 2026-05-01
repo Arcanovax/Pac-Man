@@ -34,6 +34,12 @@ from typing import Callable, Any
 
 
 class MazeGameSession(Entity):  # type: ignore
+    """Represents a single session of the 3D maze game.
+
+    Manages the game loop, entities (player, ghosts, pacgums), scoring,
+    and game states (pause, cheats, victory, game over).
+    """
+
     def __init__(
         self,
         config: ConfigModel,
@@ -41,6 +47,14 @@ class MazeGameSession(Entity):  # type: ignore
         on_victory: Callable[[int], None] | None = None,
         player_stats: Any = None
     ):
+        """Initializes the game session.
+
+        Args:
+            config: The game configuration model.
+            on_game_over: Callback function triggered upon game over.
+            on_victory: Callback function triggered upon winning the level.
+            player_stats: Player statistics including current score, lives, and level.
+        """
         super().__init__(parent=scene)
         self.config = config
         self.player_stats = player_stats
@@ -455,6 +469,11 @@ class MazeGameSession(Entity):  # type: ignore
                 self.on_victory(self.score)
 
     def update(self) -> None:
+        """Main update loop called each frame.
+
+        Handles movement processing, entity collisions, logic flow,
+        timers, and UI synchronization.
+        """
         if self.ended:
             return
 
@@ -481,6 +500,11 @@ class MazeGameSession(Entity):  # type: ignore
         self._sync_lives()
 
     def close(self) -> None:
+        """Cleans up the game session.
+
+        Destroys all visual and sound entities, pacgums,
+        and releases the mouse lock correctly.
+        """
         mouse.locked = False
 
         for gum in self.pacgums.pacgums.get("normal", []):
@@ -496,6 +520,11 @@ class MazeGameSession(Entity):  # type: ignore
         destroy(self)
 
     def input(self, key: str) -> None:
+        """Handles input events from the Ursina engine.
+
+        Args:
+            key: The string name of the key pressed.
+        """
         if key == "escape":
             self._toggle_pause_menu()
             return
@@ -513,6 +542,18 @@ def run_main_maze(
     app: Ursina | None = None,
     player_stats: Any = None
 ) -> MazeGameSession:
+    """Instantiates and begins a maze game session.
+
+    Args:
+        config: The game configuration constraints.
+        on_game_over: Callback function for a game over event.
+        on_victory: Callback function for a win event.
+        app: Optional reference to an already existing Ursina instance.
+        player_stats: Stats representing current player state.
+
+    Returns:
+        The running MazeGameSession entity object.
+    """
     local_app = app
     if local_app is None:
         local_app = Ursina()

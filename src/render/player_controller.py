@@ -20,7 +20,7 @@ AXIS_X = 'x'
 AXIS_Z = 'z'
 
 
-class PlayerController(Entity):
+class PlayerController(Entity):  # type: ignore
     """First-person player controller used in the 3D maze.
 
     Handles movement, mouse look, collision detection with raycasts,
@@ -38,7 +38,7 @@ class PlayerController(Entity):
         cheats_menu: Any = None,
         maze_3d: Any = None,
         config: Any = None,
-        pacgums: dict | None = None,
+        pacgums: dict[str, Any] | None = None,
         hit_ghost: Callable[[], None] | None = None,
     ) -> None:
         """Initialize the player controller and related camera setup.
