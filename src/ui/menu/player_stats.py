@@ -9,6 +9,6 @@ class Player_Stats():
         self.score = score
         self.level = level
 
-    def update(self, var: str, value: int):
+    def update(self, var: str, value: int) -> None:
         """Update an attribute on the stats object by name."""
         setattr(self, var, value)

@@ -63,7 +63,7 @@ class MazeGameSession(Entity):  # type: ignore
         self.power_mode_timer = 0.0
         self.invulnerable_timer = 1.5
         self.level_max_time = config.level[level].level_max_time
-        self.pause_manager = None
+        self.pause_manager: PauseMenuManager | None = None
         self.is_paused = False
         self._cheat_unlock_sequence = (
             "up arrow",
@@ -357,7 +357,7 @@ class MazeGameSession(Entity):  # type: ignore
 
     def _distance_xz(self, lhs: Vec3, rhs: Vec3) -> float:
         delta = lhs - rhs
-        return ((delta.x ** 2) + (delta.z ** 2)) ** 0.5
+        return float(((delta.x ** 2) + (delta.z ** 2)) ** 0.5)
 
     def _world_to_grid(self, world_pos: Vec3) -> tuple[int, int]:
         return (
@@ -495,7 +495,7 @@ class MazeGameSession(Entity):  # type: ignore
                 destroy(entity)
         destroy(self)
 
-    def input(self, key) -> None:
+    def input(self, key: str) -> None:
         if key == "escape":
             self._toggle_pause_menu()
             return
@@ -507,12 +507,12 @@ class MazeGameSession(Entity):  # type: ignore
 
 
 def run_main_maze(
-    config,
+    config: ConfigModel,
     on_game_over: Callable[[int], None] | None = None,
     on_victory: Callable[[int], None] | None = None,
     app: Ursina | None = None,
-    player_stats=None
-):
+    player_stats: Any = None
+) -> MazeGameSession:
     local_app = app
     if local_app is None:
         local_app = Ursina()

@@ -1,7 +1,7 @@
 from typing import Callable, Any
 
-from ursina import Entity, Text, camera, color, mouse, Button, Slider, Ursina
-from ..components import MenuButton
+from ursina import Entity, Text, camera, color, mouse, Ursina
+from ..components import MenuButton, slider_cheat, button_cheat, checkbox_cheat
 
 font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
@@ -89,7 +89,7 @@ class Cheat_menu():
         else:
             self.hide()
 
-    def add_cheat(self, cheat: Cheat, i) -> None:
+    def add_cheat(self, cheat: Cheat, i: int) -> None:
         self.__cheats.append(cheat)
         cheat.display(self.menu, i)
 
@@ -98,138 +98,4 @@ class Cheat_menu():
             if cheat.name == name:
                 return cheat
         return None
-
-
-class slider_cheat(Slider):
-    def __init__(self, parent, name, i, _change_state):
-        self._change_state = _change_state
-        self.last_value = None
-        self.pos_x = 0.4
-        self.pos_y = 0 - i*-0.075
-
-        super().__init__(
-            parent=parent,
-            x=0.1,
-            y=self.pos_y,
-            min=5,
-            max=30,
-            z=-0.1,
-            default=10,
-            bar_color=color.white,
-            step=5,
-            scale=0.6,
-            )
-
-        self.text_name = Text(
-            text=name,
-            parent=parent,
-            scale=1,
-            color=color.rgb(0.322, 0.824, 1.000),
-            origin=(-0.5, 0),
-            x=-self.pos_x,
-            y=self.pos_y,
-            z=-0.1,
-            font=font_path
-        )
-        self.bg.color = color.rgb(0.322, 0.824, 1.000)
-        self.knob.color = color.white
-        self.knob.scale = 2
-
-    def update(self) -> None:
-        super().update()
-        if self.value == self.last_value:
-            return
-        self._change_state(self.value)
-        self.last_value = self.value
-
-
-class button_cheat(Button):
-    def __init__(self, parent, name, i, _change_state, text=None):
-        self._change_state = _change_state
-        self.state = 0
-        self.pos_x = 0.4
-        self.pos_y = 0 - i*-0.075
-        self.text_button = text
-        super().__init__(
-            parent=parent,
-            scale=(0.03, 0.03),
-            x=self.pos_x,
-            y=self.pos_y,
-            color=color.rgb(0.322, 0.824, 1.000),
-            model='quad',
-            z=-0.1,
-        )
-        self.text_name = Text(
-            text=name,
-            parent=parent,
-            scale=1,
-            color=color.rgb(0.322, 0.824, 1.000),
-            origin=(-0.5, 0),
-            x=-self.pos_x,
-            y=self.pos_y,
-            z=-0.1,
-            font=font_path
-        )
-        self.text_button = Text(
-            parent=self,
-            text=self.text_button,
-            color=color.black,
-            z=-0.2,
-            scale=60,
-            origin=(0.05, 0.05),
-        )
-
-    def on_click(self) -> None:
-        self.state += 1
-        self._change_state(self.state)
-
-
-class checkbox_cheat(Button):
-    def __init__(self, parent, name, i, _change_state):
-        self._change_state = _change_state
-        self.pos_x = 0.4
-        self.pos_y = 0 - i*-0.075
-        super().__init__(
-            parent=parent,
-            scale=(0.03, 0.03),
-            x=self.pos_x,
-            y=self.pos_y,
-            color=color.white,
-            model='quad',
-            z=-0.1,
-        )
-        self.text_name = Text(
-            text=name,
-            parent=parent,
-            scale=1,
-            color=color.rgb(0.322, 0.824, 1.000),
-            origin=(-0.5, 0),
-            x=-self.pos_x,
-            y=self.pos_y,
-            z=-0.1,
-            font=font_path
-        )
-        self.activated = False
-        self.indicator = Entity(
-            parent=parent,
-            model='quad',
-            scale=0.025,
-            color=color.black,
-            x=self.pos_x,
-            y=self.pos_y,
-            z=-0.2
-        )
-
-    def on_click(self) -> None:
-        self.activated = not self.activated
-        self._change_state(self.activated)
-        self.indicator.color = (
-            color.rgb(0.322, 0.824, 1.000)
-            if self.activated
-            else color.black
-        )
-
-
-if __name__ == "__main__":
-    app = Ursina()
-    app.run()
+    
