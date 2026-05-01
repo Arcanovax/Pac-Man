@@ -4,11 +4,11 @@ class Player_Stats():
     Stores `score`, `level` and `lives` and exposes a generic `update`
     method to set attributes dynamically.
     """
-    def __init__(self, score, level, lives):
+    def __init__(self, score: int, level: int, lives: int):
         self.lives = lives
         self.score = score
         self.level = level
 
-    def update(self, var, value):
+    def update(self, var: str, value: int):
         """Update an attribute on the stats object by name."""
         setattr(self, var, value)
