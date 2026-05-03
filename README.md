@@ -8,7 +8,7 @@ A modern Python and 3D recreation of the classic arcade game Pac-Man. This proje
 ## 2. Instructions
 
 ### Installation
-You can install all required dependencies (including the external maze generator) using the provided Makefile:
+To install all required dependencies (including the external maze generator) using the provided Makefile:
 ```bash
 make install
 ```
@@ -19,6 +19,25 @@ Launch the game by providing the configuration file:
 make run
 ```
 
+### Clean up
+
+Remove the virtual environment and pycaches:
+```bash
+make clean
+```
+
+### Mypi and Flake8:
+**Normal:**
+```bash
+make lint
+```
+
+**Strict:**
+```bash
+make lint-strict
+```
+
+
 ### Cheat Menu
 Open the Cheat menu with the konami code
 ```
@@ -27,7 +46,7 @@ Open the Cheat menu with the konami code
 
 ## 3. Configuration
 The game is using the file `config.json` to store the data of the maps.
-**Common keys include:**
+
 - `highscore_filename`: Path to save highscores (e.g., `"highscore.json"`).
 - `level`: List containing level properties like `width` and `height`.
 - `lives`: Starting lives for the player (default: `3`).
@@ -38,8 +57,7 @@ If invalid or missing keys are provided, the game clamps to safe default values 
 
 ## 4. Highscore System
 Player highscores are stored persistently in a local JSON file (`highscore.json`). 
-- **Why JSON?** It allows for lightweight, readable, and standard serialization of the top 10 players.
-- **Functionality:** Loaded at startup, it accepts non-negative scores and player names (max 10 alphanumeric characters). At the end of a game, players are prompted to save their score, which is inserted and sorted securely.
+Loaded at startup, it accepts non-negative scores and player names (max 10 alphanumeric characters). At the end of a game, players are prompted to save their score, which is inserted and sorted securely.
 
 ## 5. Maze Generation
 We integrate the external `A-Maze-ing` package (`mazegenerator-2.0.1` in the `dependencies/` folder) without modifying its source. 
@@ -88,7 +106,7 @@ graph TD
     Main -->|uses| Logger
     
     UI -->|reads| Highscores
-    MazeGen -->|write| Highscores
+    MazeGen -->|save| Highscores
     Render -->|generates grid| MazeGen
 
     MazeGen -->|Handle Ghosts| Ghosts
@@ -119,5 +137,9 @@ timeline
 ```
 
 ## 9. Resources
-- **AI Usage:**
+
 - **References:** Inspired by the original game
+- **Peer-to-peer learning:** Code reviews and discussions
+- **README Markdown:** https://docs.github.com/fr/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
+- **Mermaid:** Diagrams in the readme (https://mermaid.js.org/)
+- **AI Usage:** It was used to make the Ursina graphics library easier to understand
