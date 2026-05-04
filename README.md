@@ -159,6 +159,7 @@ timeline
 				   : System of levels
           sgil--de : How ghosts work
 		  		   : Improve the config file
+				   : Add cheats
 
 ```
 
