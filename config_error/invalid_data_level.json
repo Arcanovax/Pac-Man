@@ -2,7 +2,10 @@
     "highscore_filename": "highscore.json", // File where highscores are saved
 
     "level": [ // List of available difficulty levels
-        ["easy"]
+        { "name": "easy", "width":"10k", "height": -10, "level_max_time": ""},
+        { "name": "medium", "width":"10k", "height": 20, "level_max_time": 120, "pacgum": 30},
+		{ "name": "medium2", "width":20, "height": 10, "level_max_time": 240, "pacgum": 30},
+        { "name": "hard" }
     ],
 
     "lives": 3, // Number of lives the player starts with
