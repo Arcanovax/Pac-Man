@@ -14,6 +14,28 @@ class ConfigLoader:
     validated `ConfigModel` instance.
     """
     @staticmethod
+    def _default_content() -> dict[str, Any]:
+        return {
+            "highscore_filename": "highscore.json",
+            "level": [
+                {"name": "easy", "width": 8, "height": 10,
+                    "level_max_time": 90, "pacgum": 42},
+                {"name": "medium", "width": 10, "height": 20,
+                    "level_max_time": 120, "pacgum": 64},
+                {"name": "medium2", "width": 15, "height": 10,
+                    "level_max_time": 240, "pacgum": 128},
+                {"name": "hard"}
+            ],
+            "lives": 3,
+            "points_per_pacgum": 10,
+            "points_per_super_pacgum": 50,
+            "points_per_ghost": 200,
+            "seed": 42,
+            "fov": 90.0,
+            "highscore": [],
+        }
+
+    @staticmethod
     def _loadfile(file_path: str) -> Any:
         """Read and parse a JSON config file, stripping comments.
 
@@ -54,7 +76,12 @@ class ConfigLoader:
         if file_path:
             content = ConfigLoader._loadfile(file_path)
         else:
-            content = {}
+            content = ConfigLoader._default_content()
+
+        if not content:
+            content = ConfigLoader._default_content()
+
+        content.setdefault("highscore", [])
 
         Logger.debug(f"Config loaded: {json.dumps(content, indent=2)}")
 
