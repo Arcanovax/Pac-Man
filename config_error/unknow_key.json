@@ -9,6 +9,7 @@
     ],
 
     "lives": 3, // Number of lives the player starts with
+	"Test": "Test",
 
     "points_per_pacgum": 10, // Points earned for each pacgum eaten
     "points_per_super_pacgum": 50, // Points earned for each super pacgum eaten
@@ -16,6 +17,5 @@
 
     "seed": 42, // Seed used for random generation (for reproducibility)
 
-    "fov": 90.0 // Fov used for the camera
     "fov": 90.0 // Fov used for the camera
 }

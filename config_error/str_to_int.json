@@ -1,5 +1,5 @@
 {
-    "highscore_filename": "highscore.json", // File where highscores are saved
+    "highscore_filename": 55, // File where highscores are saved
 
     "level": [ // List of available difficulty levels
         { "name": "easy", "width":8, "height": 10, "level_max_time": 90, "pacgum": 15},
@@ -16,6 +16,5 @@
 
     "seed": 42, // Seed used for random generation (for reproducibility)
 
-    "fov": 90.0 // Fov used for the camera
     "fov": 90.0 // Fov used for the camera
 }

@@ -14,8 +14,7 @@
     "points_per_super_pacgum": 50, // Points earned for each super pacgum eaten
     "points_per_ghost": 200, // Points earned for each ghost eaten
 
-    "seed": 42, // Seed used for random generation (for reproducibility)
+    "seed": , // Seed used for random generation (for reproducibility)
 
-    "fov": 90.0 // Fov used for the camera
     "fov": 90.0 // Fov used for the camera
 }

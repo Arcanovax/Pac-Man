@@ -48,12 +48,35 @@ Open the Cheat menu with the konami code
 The game is using the file `config.json` to store the data of the maps.
 
 - `highscore_filename`: Path to save highscores (e.g., `"highscore.json"`).
-- `level`: List containing level properties like `width` and `height`.
+- `level`: List containing levels (default width: 15, height: 20, level_max_time: 90, pacgum: 42)
 - `lives`: Starting lives for the player (default: `3`).
-- `seed`: Fixed seed for the first level generation (default: `42`).
-- `level_max_time`: Time limit per level in seconds (default: `90`).
-- *Scoring:* `points_per_pacgum` (10), `points_per_super_pacgum` (50), `points_per_ghost` (200).
+- `seed`: Fixed seed for the levels generation (default: `42`).
+- *Scoring:* `points_per_pacgum` (default: 10), `points_per_super_pacgum` (default: 50), `points_per_ghost` (default: 200).
 If invalid or missing keys are provided, the game clamps to safe default values without crashing.
+
+```bash
+{
+    "highscore_filename": "highscore.json", // File where highscores are saved
+
+    "level": [ // List of available difficulty levels
+        { "name": "easy", "width":8, "height": 10, "level_max_time": 90, "pacgum": 15},
+        { "name": "medium", "width":10, "height": 20, "level_max_time": 120, "pacgum": 30},
+		{ "name": "medium2", "width":20, "height": 10, "level_max_time": 240, "pacgum": 30},
+        { "name": "hard" }
+    ],
+
+    "lives": 3, // Number of lives the player starts with
+
+    "points_per_pacgum": 10, // Points earned for each pacgum eaten
+    "points_per_super_pacgum": 50, // Points earned for each super pacgum eaten
+    "points_per_ghost": 200, // Points earned for each ghost eaten
+
+    "seed": 42, // Seed used for random generation (for reproducibility)
+
+    "fov": 90.0 // Fov used for the camera
+}
+```
+
 
 ## 4. Highscore System
 Player highscores are stored persistently in a local JSON file (`highscore.json`).
