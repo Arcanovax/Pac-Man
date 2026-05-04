@@ -3,6 +3,7 @@ from random import shuffle
 from enum import Enum
 from .minimap import MiniMap
 from ..parsing.model import ConfigModel
+from ..logger.logger import Logger
 
 
 class Pacgum_Type(Enum):
@@ -44,11 +45,30 @@ class Pacgums_Manager():
             "super": []
         }
 
+        total_available = len(self.pacgums_zone)
+        num_super = 4
+        if self.nb_pacgum + num_super > total_available:
+            total_pacgums = self.nb_pacgum + num_super
+            Logger.warning(
+                f"Too many pacgums ({total_pacgums}) for map size "
+                f"({self.width}x{self.height}). "
+                f"Only {total_available} cells available."
+            )
+
         self.gen_super_pacgum(Vec3(0, 0.25, 0))
         self.gen_super_pacgum(Vec3(0, 0.25, -self.height+1))
         self.gen_super_pacgum(Vec3(self.width-1, 0.25, 0))
         self.gen_super_pacgum(Vec3(self.width-1, 0.25, -self.height+1))
+
         shuffle(self.pacgums_zone)
+        available_after_super = len(self.pacgums_zone)
+        if self.nb_pacgum > available_after_super:
+            Logger.warning(
+                f"Requested {self.nb_pacgum} normal pacgums but only "
+                f"{available_after_super} cells remain; clamping to "
+                f"{available_after_super}.")
+            self.nb_pacgum = available_after_super
+
         for i in range(self.nb_pacgum):
             pos = Vec3(self.pacgums_zone[i][0], 0.15, self.pacgums_zone[i][1])
             self.gen_pacgum(pos)

@@ -72,15 +72,18 @@ class LevelModel(BaseModel):
         try:
             v = int(v)
         except Exception:
-            Logger.warning(f"'{field_name}' invalid, using default")
+            Logger.warning(f"level: {info.data["name"]} "
+                           f"'{field_name}' invalid, using default")
             return cls.model_fields[field_name].default
 
         if v <= 0:
-            Logger.warning(f"'{field_name}' must be > 0, using default")
+            Logger.warning(f"level: {info.data["name"]} "
+                           f"'{field_name}' must be > 0, using default")
             return cls.model_fields[field_name].default
 
-        if v <= 20:
-            Logger.warning(f"'{field_name}' must be < 20, using default")
+        if v > 20:
+            Logger.warning(f"level: {info.data["name"]} "
+                           f"'{field_name}' must be < 20, using default")
             return cls.model_fields[field_name].default
 
         return v

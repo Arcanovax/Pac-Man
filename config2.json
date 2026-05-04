@@ -2,9 +2,9 @@
     "highscore_filename": "highscore.json", // File where highscores are saved
 
     "level": [ // List of available difficulty levels
-        { "name": "easy", "width":8, "height": 10, "level_max_time": 90, "pacgum": 1},
-        { "name": "medium", "width":10, "height": 20, "level_max_time": 120, "pacgum": 2},
-		{ "name": "medium2", "width":15, "height": 10, "level_max_time": 240, "pacgum": 3},
+        { "name": "easy", "width": 8, "height": 10, "level_max_time": 90, "pacgum": 24},
+        { "name": "medium", "width": 10, "height": 20, "level_max_time": 120, "pacgum": 48},
+		{ "name": "medium2", "width": 15, "height": 10, "level_max_time": 240, "pacgum": 200},
         { "name": "hard" }
     ],
 
