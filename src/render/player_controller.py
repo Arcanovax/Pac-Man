@@ -15,8 +15,6 @@ from ursina import (
     time,
     color
 )
-# It looks like the code is attempting to define a variable named `player_contro`, but it seems
-# to be incomplete or incorrect as it ends with `
 
 AXIS_X = 'x'
 AXIS_Z = 'z'
