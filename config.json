@@ -2,7 +2,7 @@
     "highscore_filename": "highscore.json", // File where highscores are saved
 
     "level": [ // List of available difficulty levels
-        { "name": "easy", "width":8, "height": 10, "level_max_time": 90, "pacgum": 15},
+        { "name": "easy", "width":"a", "height": 10, "level_max_time": 90, "pacgum": 15},
         { "name": "medium", "width":10, "height": 20, "level_max_time": 120, "pacgum": 30},
 		{ "name": "medium2", "width":20, "height": 10, "level_max_time": 240, "pacgum": 30},
         { "name": "hard" }
@@ -16,6 +16,5 @@
 
     "seed": 42, // Seed used for random generation (for reproducibility)
 
-    "fov": 90.0 // Fov used for the camera
     "fov": 90.0 // Fov used for the camera
 }
