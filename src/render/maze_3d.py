@@ -139,14 +139,14 @@ class Maze_3d():
             if (walls.get('NORTH') is True and
                not (x*self.scale, 2, (y+0.5)*self.scale) in pos):
                 self.walls_entity.append(
-                    self.gen_wall((x, 2, (y+0.5)), (1.2, 1, 0.2))
+                    self.gen_wall((x, 2, (y+0.5)), (1.0, 1, 0.2))
                 )
             if (walls.get('SOUTH') is True and
                not (x*self.scale, 2, (y-0.5)*self.scale) in pos):
                 self.walls_entity.append(
                     self.gen_wall(
                         (x, 2, (y-0.5)),
-                        (1.2, 1, 0.2)
+                        (1.0, 1, 0.2)
                     )
                 )
             if (walls.get('EAST') is True and
@@ -154,7 +154,7 @@ class Maze_3d():
                 self.walls_entity.append(
                     self.gen_wall(
                         ((x+0.5), 2, y),
-                        (0.2, 1, 1.2)
+                        (0.2, 1, 1.0)
                     )
                 )
             if (walls.get('WEST') is True and
@@ -162,6 +162,6 @@ class Maze_3d():
                 self.walls_entity.append(
                     self.gen_wall(
                         ((x-0.5), 2, y),
-                        (0.2, 1, 1.2)
+                        (0.2, 1, 1.0)
                     )
                 )

@@ -17,5 +17,5 @@
     "seed": 42, // Seed used for random generation (for reproducibility)
 
     "mouse_sensitivity": 40.0, // Mouse sensitivity used for camera
-    "fov": 60.0 // Mouse sensitivity used for camera
+    "fov": 90.0 // Mouse sensitivity used for camera
 }
