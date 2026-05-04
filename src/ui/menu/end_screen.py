@@ -158,7 +158,7 @@ def _show_end_screen(
         label="NAME",
         y=-0.12,
         default_value="",
-        character_limit=21,
+        character_limit=10,
     )
     ui_entities.append(name_input)
 
