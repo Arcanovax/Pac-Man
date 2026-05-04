@@ -235,12 +235,63 @@ class ConfigModel(BaseModel):
     def load_highscore(self) -> Any:
         try:
             with open(self.highscore_filename, "r") as f:
-                self.highscore = sorted(
-                    json.load(f),
-                    key=lambda x: x["score"],
-                    reverse=True
-                )
+                raw = json.load(f)
         except Exception:
             Logger.warning("Failed to parse highscore file, using default")
             self.highscore = []
+            return self
+
+        if not isinstance(raw, list):
+            Logger.warning(
+                "Highscore file format invalid (expected list), using default"
+            )
+            self.highscore = []
+            return self
+
+        valid: list[dict[str, Any]] = []
+        for idx, entry in enumerate(raw):
+            if not isinstance(entry, dict):
+                Logger.warning(f"Skipping highscore[{idx}]: not an object")
+                continue
+
+            if "name" not in entry or "score" not in entry:
+                Logger.warning(f"Skipping HS[{idx}]: missing keys")
+                continue
+
+            name = entry.get("name")
+            score_raw: Any = entry.get("score")
+
+            if not isinstance(name, str):
+                Logger.warning(f"Skipping highscore[{idx}]: name not a string")
+                continue
+
+            if len(name) > 10:
+                Logger.warning(
+                    f"Skipping highscore[{idx}]: name '{name}' too long"
+                )
+                continue
+
+            if not all(c.isalnum() or c == " " for c in name):
+                Logger.warning(
+                    f"Skipping HS[{idx}]: name invalid '{name}'"
+                )
+                continue
+
+            try:
+                score = int(score_raw)
+            except Exception:
+                Logger.warning(
+                    f"Skipping highscore[{idx}]: invalid score for '{name}'"
+                )
+                continue
+
+            if score < 0:
+                Logger.warning(
+                    f"Skipping highscore[{idx}]: negative score for '{name}'"
+                )
+                continue
+
+            valid.append({"name": name, "score": score})
+
+        self.highscore = sorted(valid, key=lambda x: x["score"], reverse=True)
         return self
