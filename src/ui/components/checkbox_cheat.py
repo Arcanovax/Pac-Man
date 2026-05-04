@@ -3,24 +3,32 @@ from ursina import Button, Text, Entity, color
 
 font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
+
 class checkbox_cheat(Button):
     # type: ignore
     """Custom checkbox for cheat visual.
     Args:
         Button: Button from ursina
     """
-    def __init__(self, parent: Entity, name: str, i: int, _change_state: Callable[[Any], None]) -> None:
+    def __init__(
+        self,
+        parent: Entity,
+        name: str,
+        i: int,
+        _change_state: Callable[[Any], None],
+    ) -> None:
         """Init the checkbox for the cheat.
 
         Args:
             parent (Entity): Cheat menu
             name (str): name of the cheat
             i (int): index of the cheat
-            _change_state (Callable[[Any], None]): function to change the state.
+            _change_state (Callable[[Any], None]): function to change the
+                state.
         """
         self._change_state = _change_state
         self.pos_x = 0.4
-        self.pos_y = 0 - i*-0.075
+        self.pos_y = -0.08 - i * -0.075
         super().__init__(
             parent=parent,
             scale=(0.03, 0.03),
@@ -53,8 +61,7 @@ class checkbox_cheat(Button):
         )
 
     def on_click(self) -> None:
-        """update the value of the state of the cheat and change the visual of the checkbox
-        """
+        """Toggle the checkbox state and update its visual indicator."""
         self.activated = not self.activated
         self._change_state(self.activated)
         self.indicator.color = (

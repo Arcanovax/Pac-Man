@@ -3,12 +3,20 @@ from ursina import Button, Text, color, Entity
 
 font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
+
 class button_cheat(Button):  # type: ignore
     """Custom button for cheat visual.
     Args:
         Button: Button from ursina
     """
-    def __init__(self, parent: Entity, name: str, i: int, _change_state: Callable[[Any], None], text: str | None = None) -> None:
+    def __init__(
+        self,
+        parent: Entity,
+        name: str,
+        i: int,
+        _change_state: Callable[[Any], None],
+        text: str | None = None,
+    ) -> None:
         """Init the button for the cheat.
 
         Args:
@@ -16,12 +24,13 @@ class button_cheat(Button):  # type: ignore
             name (str): name of the cheat
             i (int): index of the cheat
             _change_state (Callable[[Any], None]): function to change the state
-            text (str | None, optional): text inside the button. Defaults to None.
+            text (str | None, optional): text inside the button. Defaults to
+                None.
         """
         self._change_state = _change_state
         self.state = 0
         self.pos_x = 0.4
-        self.pos_y = 0 - i*-0.075
+        self.pos_y = -0.08 - i * -0.075
         self.text_button = text
         super().__init__(
             parent=parent,

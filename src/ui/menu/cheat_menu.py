@@ -1,26 +1,26 @@
-from typing import Callable, Any
-from ursina import Entity, Text, camera, color, mouse, Ursina
+from typing import Callable
+from ursina import Entity, Text, camera, color, mouse
 from ..components import MenuButton, slider_cheat, button_cheat, checkbox_cheat
 
 font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
 
-class Cheat():
-    """Cheat class that handle several buttons types
-    """
+class Cheat:
+    """Describe one cheat entry and its current state."""
+
     def __init__(self, name: str, is_cursor: bool = False,
                  is_button: bool = False):
         self.name = name
-        self.state: Any = False
+        self.state: bool | int | float = False
         self.is_cursor = is_cursor
         self.is_button = is_button
 
     def display(self, parent: Entity, i: int) -> None:
-        """Display the appropriate cheat button.
+        """Display the control that matches the cheat type.
 
         Args:
-            parent (Entity): Cheat menu
-            i (int): index of the cheat
+            parent: Menu parent entity.
+            i: Cheat index in the menu.
         """
         if self.is_cursor:
             slider_cheat(parent, self.name, i, self.change_state)
@@ -29,18 +29,15 @@ class Cheat():
         else:
             checkbox_cheat(parent, self.name, i, self.change_state)
 
-    def change_state(self, state: Any) -> None:
-        """change the state value of the cheat
+    def change_state(self, state: bool | int | float) -> None:
+        """Update the cheat state from the menu widget."""
 
-        Args:
-            state (Any): new state
-        """
         self.state = state
 
 
-class Cheat_menu():
-    """Cheat menu that contains and handle all the cheats.
-    """
+class Cheat_menu:
+    """Menu container used to display and manage available cheats."""
+
     def __init__(self, on_exit: Callable[[], None] | None = None):
         self.__cheats: list[Cheat] = []
         self._on_exit = on_exit
@@ -90,46 +87,42 @@ class Cheat_menu():
         self.exit_button.z = -0.1
 
     def show(self) -> None:
-        """Show the menu.
-        """
+        """Show the menu."""
         self.menu.enabled = True
         mouse.locked = False
 
     def hide(self) -> None:
-        """Hide the menu.
-        """
+        """Hide the menu."""
         self.menu.enabled = False
         mouse.locked = True
 
     def _handle_exit_click(self) -> None:
-        """Exit the menu.
-        """
+        """Close the menu or delegate to the provided exit callback."""
         if self._on_exit is not None:
             self._on_exit()
         else:
             self.hide()
 
     def add_cheat(self, cheat: Cheat, i: int) -> None:
-        """Add a cheat to the menu list and display it.
+        """Add a cheat entry to the menu and render it.
 
         Args:
-            cheat (Cheat): class Cheat
-            i (int): index of the cheat
+            cheat: Cheat entry to add.
+            i: Cheat index in the menu.
         """
         self.__cheats.append(cheat)
         cheat.display(self.menu, i)
 
     def get_cheat(self, name: str) -> Cheat | None:
-        """Return the class of the cheat from his name
+        """Return the cheat entry matching the given name.
 
         Args:
-            name (str): name of the cheat
+            name: Cheat name to look up.
 
         Returns:
-            Cheat | None: Class of the cheat
+            The matching cheat, or ``None`` if it does not exist.
         """
         for cheat in self.__cheats:
             if cheat.name == name:
                 return cheat
         return None
-    

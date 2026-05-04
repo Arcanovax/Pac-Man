@@ -20,7 +20,6 @@ from .pacgums import Pacgums_Manager
 from ..parsing.model import ConfigModel
 from ..ghosts.ghost import (
     STATE_EATEN,
-    STATE_FRIGHTENED,
     Blinky,
     Clyde,
     Inky,
@@ -30,7 +29,7 @@ from ..ui.menu.hud import HUDTemplate
 from ..ui.menu.cheat_menu import Cheat_menu
 from ..ui.menu.cheat_menu import Cheat
 from ..ui.menu.pause_menu import PauseMenuManager
-from typing import Callable, Any
+from typing import Any, Callable
 
 
 class MazeGameSession(Entity):  # type: ignore
@@ -53,7 +52,7 @@ class MazeGameSession(Entity):  # type: ignore
             config: The game configuration model.
             on_game_over: Callback function triggered upon game over.
             on_victory: Callback function triggered upon winning the level.
-            player_stats: Player statistics including current score, lives, and level.
+            player_stats: Player statistics with score, lives, and level.
         """
         super().__init__(parent=scene)
         self.config = config
@@ -65,20 +64,22 @@ class MazeGameSession(Entity):  # type: ignore
         self.on_game_over = on_game_over
         self.on_victory = on_victory
         self.ended = False
-        self.cheats = [
+        self.cheats: list[Cheat] = [
             Cheat("no_clip"),
             Cheat("speed", is_cursor=True),
             Cheat("wallhack"),
+            Cheat("infinite_eat"),
+            Cheat("extra_time", is_button=True),
             Cheat("extra_lives", is_button=True)
         ]
-        self.score = player_stats.score
-        self.lives = player_stats.lives
-        self._show_cheats = False
-        self.power_mode_timer = 0.0
-        self.invulnerable_timer = 1.5
-        self.level_max_time = config.level[level].level_max_time
+        self.score: int = int(player_stats.score)
+        self.lives: int = int(player_stats.lives)
+        self._show_cheats: bool = False
+        self.power_mode_timer: float = 0.0
+        self.invulnerable_timer: float = 1.5
+        self.level_max_time: int = int(config.level[level].level_max_time)
         self.pause_manager: PauseMenuManager | None = None
-        self.is_paused = False
+        self.is_paused: bool = False
         self._cheat_unlock_sequence = (
             "up arrow",
             "up arrow",
@@ -142,6 +143,7 @@ class MazeGameSession(Entity):  # type: ignore
         return chosen
 
     def _build_world(self) -> None:
+        """Build the maze, UI, player and ghost entities for the session."""
         maze_gen = MazeGenerator(
             size=self.size,
             perfect=False,
@@ -237,6 +239,7 @@ class MazeGameSession(Entity):  # type: ignore
         self.mini_map.attach_ghosts(self.ghosts)
 
     def _toogle_cheat_menu(self) -> None:
+        """Toggle the cheat overlay and freeze or resume gameplay."""
         if self._show_cheats:
             self._close_cheat_menu()
         else:
@@ -245,6 +248,7 @@ class MazeGameSession(Entity):  # type: ignore
             self._set_cheat_freeze(True)
 
     def _close_cheat_menu(self) -> None:
+        """Close the cheat overlay and restore gameplay state."""
         if not self._show_cheats:
             return
         self._show_cheats = False
@@ -252,6 +256,7 @@ class MazeGameSession(Entity):  # type: ignore
         self._set_cheat_freeze(False)
 
     def _set_cheat_freeze(self, frozen: bool) -> None:
+        """Pause or resume active gameplay while the cheat menu is open."""
         if self.ended:
             return
 
@@ -271,6 +276,10 @@ class MazeGameSession(Entity):  # type: ignore
             ghost.enabled = True
 
     def _track_cheat_sequence(self, key: str) -> bool:
+        """Detect the unlock sequence for the cheat menu.
+
+        Returns True when the sequence has just been completed.
+        """
         if key not in ("up arrow", "down arrow", "left arrow", "right arrow"):
             return False
 
@@ -287,6 +296,7 @@ class MazeGameSession(Entity):  # type: ignore
         return False
 
     def _toggle_pause_menu(self) -> None:
+        """Open or close the pause overlay."""
         if self.ended:
             return
 
@@ -296,6 +306,7 @@ class MazeGameSession(Entity):  # type: ignore
             self._pause_game()
 
     def _pause_game(self) -> None:
+        """Freeze gameplay and show the pause menu."""
         self.is_paused = True
 
         if self._show_cheats:
@@ -320,6 +331,7 @@ class MazeGameSession(Entity):  # type: ignore
         self.pause_manager.show(on_resume, on_quit)
 
     def _resume_game(self) -> None:
+        """Resume gameplay after a pause."""
         self.is_paused = False
 
         self.player.enabled = True
@@ -332,6 +344,7 @@ class MazeGameSession(Entity):  # type: ignore
             self.pause_manager = None
 
     def _build_hud(self) -> None:
+        """Create the HUD with score, lives and countdown widgets."""
         self.hud = HUDTemplate(
             score=0,
             lives=self.lives,
@@ -342,6 +355,7 @@ class MazeGameSession(Entity):  # type: ignore
         )
 
     def _time_up(self) -> None:
+        """Handle the end of the countdown timer."""
         if self.ended:
             return
         self.ended = True
@@ -351,6 +365,7 @@ class MazeGameSession(Entity):  # type: ignore
             self.on_game_over(self.score)
 
     def _freeze_gameplay(self) -> None:
+        """Disable active entities and persist the final stats."""
         self.player.enabled = False
         self.hud.countdown = False
         self.player_stats.update("score", self.score)
@@ -365,21 +380,39 @@ class MazeGameSession(Entity):  # type: ignore
                 destroy(entity)
 
     def _activate_power_mode(self, duration: float = 8.0) -> None:
+        """Activate the frightened state after a super pacgum."""
         self.power_mode_timer = max(self.power_mode_timer, float(duration))
         for ghost in self.ghosts:
             ghost.set_frightened(duration)
 
+    def _handle_time_cheat(self) -> None:
+        """Consume one time cheat charge and add time to the HUD."""
+        time_cheat = self.cheats_menu.get_cheat("extra_time")
+        if time_cheat is None or time_cheat.state <= 0:
+            return
+
+        time_cheat.state -= 1
+        self.hud.add_time(15)
+
+    def _is_infinite_eat_active(self) -> bool:
+        """Return True when the player can eat ghosts endlessly."""
+        cheat = self.cheats_menu.get_cheat("infinite_eat")
+        return bool(cheat and cheat.state)
+
     def _distance_xz(self, lhs: Vec3, rhs: Vec3) -> float:
+        """Return the horizontal distance between two 3D positions."""
         delta = lhs - rhs
         return float(((delta.x ** 2) + (delta.z ** 2)) ** 0.5)
 
     def _world_to_grid(self, world_pos: Vec3) -> tuple[int, int]:
+        """Convert a world-space position to maze grid coordinates."""
         return (
             int(round(world_pos.x / self.maze_3d.scale)),
             int(round(world_pos.z / self.maze_3d.scale)),
         )
 
     def _respawn_positions(self) -> None:
+        """Reset the player and ghosts to their spawn locations."""
         self.player.reset_to_spawn()
         for ghost in self.ghosts:
             ghost.reset_to_spawn()
@@ -387,6 +420,10 @@ class MazeGameSession(Entity):  # type: ignore
         self.invulnerable_timer = 1.8
 
     def _on_player_hit(self) -> None:
+        """Handle the player taking a hit from a non-frightened ghost."""
+        if self._is_infinite_eat_active():
+            return
+
         if self.ended or self.invulnerable_timer > 0:
             return
 
@@ -405,8 +442,12 @@ class MazeGameSession(Entity):  # type: ignore
         self._respawn_positions()
 
     def _check_ghost_collisions(self) -> None:
+        """Resolve collisions between the player and visible ghosts."""
         if self.invulnerable_timer > 0:
             return
+
+        infinite_eat_active = self._is_infinite_eat_active()
+        power_mode_active = self.power_mode_timer > 0 or infinite_eat_active
 
         player_cell = self._world_to_grid(self.player.position)
 
@@ -423,7 +464,7 @@ class MazeGameSession(Entity):  # type: ignore
             if not in_same_cell and not close_in_world:
                 continue
 
-            if self.power_mode_timer > 0 and ghost.state == STATE_FRIGHTENED:
+            if power_mode_active:
                 ghost.on_eaten(respawn_delay=3.0)
                 self.score += int(self.config.points_per_ghost)
                 self.hud.set_score(self.score)
@@ -432,6 +473,7 @@ class MazeGameSession(Entity):  # type: ignore
             break
 
     def _sync_lives(self) -> None:
+        """Keep HUD and player life counters aligned."""
         if self.player.lives != self.lives:
             self.lives = max(0, int(self.player.lives))
 
@@ -439,6 +481,7 @@ class MazeGameSession(Entity):  # type: ignore
         self.hud.set_lives(self.lives)
 
     def _sync_score(self) -> None:
+        """Update the score from collected pacgums and victory state."""
         normal_left = sum(
             1 for gum in self.pacgums.pacgums.get("normal", []) if gum.visible
         )
@@ -488,6 +531,8 @@ class MazeGameSession(Entity):  # type: ignore
 
         if self.power_mode_timer > 0:
             self.power_mode_timer = max(0.0, self.power_mode_timer - time.dt)
+
+        self._handle_time_cheat()
 
         self.blinky.update_ai(self.blinky)
         self.pinky.update_ai(self.blinky)
