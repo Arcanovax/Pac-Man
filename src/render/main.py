@@ -77,7 +77,6 @@ class MazeGameSession(Entity):
         self.lives: int = int(player_stats.lives)
         self._show_cheats: bool = False
         self.power_mode_timer: float = 0.0
-        self.invulnerable_timer: float = 1.5
         self.level_max_time: int = int(config.level[level].level_max_time)
         self.pause_manager: PauseMenuManager | None = None
         self.is_paused: bool = False
@@ -420,14 +419,13 @@ class MazeGameSession(Entity):
         for ghost in self.ghosts:
             ghost.reset_to_spawn()
         self.power_mode_timer = 0.0
-        self.invulnerable_timer = 1.8
 
     def _on_player_hit(self) -> None:
         """Handle the player taking a hit from a non-frightened ghost."""
         if self._is_infinite_eat_active():
             return
 
-        if self.ended or self.invulnerable_timer > 0:
+        if self.ended:
             return
 
         self.lives -= 1
@@ -446,9 +444,6 @@ class MazeGameSession(Entity):
 
     def _check_ghost_collisions(self) -> None:
         """Resolve collisions between the player and visible ghosts."""
-        if self.invulnerable_timer > 0:
-            return
-
         infinite_eat_active = self._is_infinite_eat_active()
         power_mode_active = self.power_mode_timer > 0 or infinite_eat_active
 
@@ -530,12 +525,6 @@ class MazeGameSession(Entity):
 
         if self.is_paused or self._show_cheats:
             return
-
-        if self.invulnerable_timer > 0:
-            self.invulnerable_timer = max(
-                0.0,
-                self.invulnerable_timer - time.dt,
-            )
 
         if self.power_mode_timer > 0:
             self.power_mode_timer = max(0.0, self.power_mode_timer - time.dt)
