@@ -9,7 +9,7 @@ from ursina import (
 )
 
 from ...logger import Logger
-from ..components import MenuButton, VHSEffect
+from ..components import MenuButton
 
 
 class PauseMenuManager:
@@ -68,9 +68,6 @@ class PauseMenuManager:
     def _build_pause_ui(self) -> None:
         """Construct the pause menu UI and wire button callbacks."""
         self.pause_entities.extend(self._build_retro_frame())
-
-        vhs = VHSEffect(intensity=0.50)
-        vhs.z = 0.05
 
         title = Entity(
             parent=camera.ui,
