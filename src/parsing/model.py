@@ -129,6 +129,27 @@ class ConfigModel(BaseModel):
             "}\n"
         )
 
+    @model_validator(mode="before")
+    @classmethod
+    def _warn_missing_keys(cls, values: Any) -> Any:
+        """Warn about missing top-level keys in the provided config mapping.
+
+        If the input is not a mapping we don't perform the check. For any
+        expected top-level field that is not provided we log a warning so the
+        user knows the default will be used.
+        """
+        if not isinstance(values, dict):
+            return values
+
+        provided = set(values.keys())
+        expected = set(cls.model_fields.keys())
+        missing = expected - provided
+        if missing:
+            for key in sorted(missing):
+                Logger.warning(f"'{key}' missing in config, using default")
+
+        return values
+
     @field_validator(
         "lives",
         "points_per_pacgum", "points_per_super_pacgum",
