@@ -19,11 +19,11 @@ class ConfigLoader:
             "highscore_filename": "highscore.json",
             "level": [
                 {"name": "easy", "width": 8, "height": 10,
-                    "level_max_time": 90, "pacgum": 42},
+                    "level_max_time": 90, "pacgum": 15},
                 {"name": "medium", "width": 10, "height": 20,
-                    "level_max_time": 120, "pacgum": 64},
-                {"name": "medium2", "width": 15, "height": 10,
-                    "level_max_time": 240, "pacgum": 128},
+                    "level_max_time": 120, "pacgum": 30},
+                {"name": "medium2", "width": 20, "height": 10,
+                    "level_max_time": 240, "pacgum": 30},
                 {"name": "hard"}
             ],
             "lives": 3,
@@ -57,8 +57,7 @@ class ConfigLoader:
         try:
             return json.loads(content)
         except json.JSONDecodeError as e:
-            Logger.warning(f"Error decoding JSON from {file_path}: {e}")
-            return {}
+            raise ValueError(f"Error decoding JSON from {file_path}: {e}")
 
     @staticmethod
     def load_config(file_path: str | None) -> ConfigModel:
@@ -74,11 +73,16 @@ class ConfigLoader:
             A validated `ConfigModel` instance.
         """
         if file_path:
-            content = ConfigLoader._loadfile(file_path)
+            try:
+                content = ConfigLoader._loadfile(file_path)
+            except ValueError as e:
+                Logger.warning(str(e))
+                content = ConfigLoader._default_content()
         else:
             content = ConfigLoader._default_content()
 
         if not content:
+            Logger.warning("Content of the json is empty.")
             content = ConfigLoader._default_content()
 
         content.setdefault("highscore", [])
