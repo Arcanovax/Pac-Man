@@ -52,6 +52,39 @@ class LevelModel(BaseModel):
 
         return v
 
+    @field_validator(
+        "width", "height",
+        mode="before"
+    )
+    @classmethod
+    def _validate_size(cls, v: Any, info: Any) -> Any:
+        """Validator to coerce a value to positive integer or use the default.
+
+        Args:
+            v: The incoming raw value to validate.
+            info: Pydantic validator info containing field metadata.
+
+        Returns:
+            A valid positive integer for the field or the field default.
+        """
+        field_name = info.field_name
+
+        try:
+            v = int(v)
+        except Exception:
+            Logger.warning(f"'{field_name}' invalid, using default")
+            return cls.model_fields[field_name].default
+
+        if v <= 0:
+            Logger.warning(f"'{field_name}' must be > 0, using default")
+            return cls.model_fields[field_name].default
+
+        if v <= 20:
+            Logger.warning(f"'{field_name}' must be < 20, using default")
+            return cls.model_fields[field_name].default
+
+        return v
+
 
 class ConfigModel(BaseModel):
     """Pydantic model representing the whole configuration object.
@@ -127,6 +160,10 @@ class ConfigModel(BaseModel):
     @classmethod
     def _validate_float_positive(cls, v: Any, info: Any) -> Any:
         field_name = info.field_name
+        limit = {
+            "fov": (50.0, 120.0),
+            "mouse_sensitivity": (20.0, 80.0),
+        }
 
         try:
             v = float(v)
@@ -134,8 +171,12 @@ class ConfigModel(BaseModel):
             Logger.warning(f"'{field_name}' invalid, using default")
             return cls.model_fields[field_name].default
 
-        if v <= 0:
-            Logger.warning(f"'{field_name}' must be > 0, using default")
+        min_value, max_value = limit[field_name]
+        if v < min_value or v > max_value:
+            Logger.warning(
+                f"'{field_name}' must be between {min_value} and {max_value}, "
+                "using default"
+            )
             return cls.model_fields[field_name].default
 
         return v

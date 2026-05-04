@@ -3,7 +3,7 @@
 
     "level": [ // List of available difficulty levels
         { "name": "easy", "width":8, "height": 10, "level_max_time": 90, "pacgum": 1},
-        { "name": "medium", "width":10, "height": 15, "level_max_time": 120, "pacgum": 2},
+        { "name": "medium", "width":10, "height": 21, "level_max_time": 120, "pacgum": 2},
 		{ "name": "medium2", "width":15, "height": 10, "level_max_time": 240, "pacgum": 3},
         { "name": "hard" }
     ],
@@ -17,5 +17,5 @@
     "seed": 42, // Seed used for random generation (for reproducibility)
 
     "mouse_sensitivity": 40.0, // Mouse sensitivity used for camera
-    "fov": 90.0 // Mouse sensitivity used for camera
+    "fov": 60.0 // Mouse sensitivity used for camera
 }
