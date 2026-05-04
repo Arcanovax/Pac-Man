@@ -98,9 +98,60 @@ class ConfigModel(BaseModel):
 
     highscore_filename: str = Field(min_length=1, default="highscore.json")
     level: list[LevelModel] = Field(default=[
-        LevelModel(name="easy"),
-        LevelModel(name="medium"),
-        LevelModel(name="hard"),
+        LevelModel(
+            name="easy1", width=5, height=5, level_max_time=90, pacgum=5
+        ),
+        LevelModel(
+            name="easy2", width=7, height=7, level_max_time=90, pacgum=7
+        ),
+        LevelModel(
+            name="easy3", width=5, height=7, level_max_time=90, pacgum=6
+        ),
+        LevelModel(
+            name="easy4", width=5, height=10, level_max_time=90, pacgum=10
+        ),
+        LevelModel(
+            name="medium1",
+            width=10,
+            height=10,
+            level_max_time=120,
+            pacgum=15,
+        ),
+        LevelModel(
+            name="medium2",
+            width=20,
+            height=10,
+            level_max_time=240,
+            pacgum=20,
+        ),
+        LevelModel(
+            name="medium2",
+            width=10,
+            height=20,
+            level_max_time=240,
+            pacgum=30,
+        ),
+        LevelModel(
+            name="hard1",
+            width=15,
+            height=20,
+            level_max_time=240,
+            pacgum=35,
+        ),
+        LevelModel(
+            name="hard2",
+            width=20,
+            height=15,
+            level_max_time=240,
+            pacgum=40,
+        ),
+        LevelModel(
+            name="hard3",
+            width=20,
+            height=20,
+            level_max_time=240,
+            pacgum=42,
+        ),
     ])
     lives: int = Field(gt=0, default=3)
     points_per_pacgum: int = Field(gt=0, default=10)

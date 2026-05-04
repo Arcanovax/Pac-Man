@@ -18,13 +18,26 @@ class ConfigLoader:
         return {
             "highscore_filename": "highscore.json",
             "level": [
-                {"name": "easy", "width": 8, "height": 10,
-                    "level_max_time": 90, "pacgum": 15},
-                {"name": "medium", "width": 10, "height": 20,
-                    "level_max_time": 120, "pacgum": 30},
+                {"name": "easy1", "width": 5, "height": 5,
+                    "level_max_time": 90, "pacgum": 5},
+                {"name": "easy2", "width": 7, "height": 7,
+                    "level_max_time": 90, "pacgum": 7},
+                {"name": "easy3", "width": 5, "height": 7,
+                    "level_max_time": 90, "pacgum": 6},
+                {"name": "easy4", "width": 5, "height": 10,
+                    "level_max_time": 90, "pacgum": 10},
+                {"name": "medium1", "width": 10, "height": 10,
+                    "level_max_time": 120, "pacgum": 15},
                 {"name": "medium2", "width": 20, "height": 10,
+                    "level_max_time": 240, "pacgum": 20},
+                {"name": "medium2", "width": 10, "height": 20,
                     "level_max_time": 240, "pacgum": 30},
-                {"name": "hard"}
+                {"name": "hard1", "width": 15, "height": 20,
+                    "level_max_time": 240, "pacgum": 35},
+                {"name": "hard2", "width": 20, "height": 15,
+                    "level_max_time": 240, "pacgum": 40},
+                {"name": "hard3", "width": 20, "height": 20,
+                    "level_max_time": 240, "pacgum": 42}
             ],
             "lives": 3,
             "points_per_pacgum": 10,
@@ -94,4 +107,4 @@ class ConfigLoader:
         except ValidationError as etc:
             error = etc.errors()[0]
             Logger.warning(f"Invalid config: {error['msg']}")
-            return ConfigModel()
+            return ConfigModel(**ConfigLoader._default_content())
