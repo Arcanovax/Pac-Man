@@ -191,7 +191,7 @@ class MazeGameSession(Entity):
 
         self.player = PlayerController(
             speed=10,
-            collider_size=Vec3(2.0, 2, 2.0),
+            collider_size=Vec3(1.5, 1.5, 1.5),
             eye_height=2.0,
             fov=90,
             mini_map=self.mini_map,

@@ -15,6 +15,8 @@ from ursina import (
     time,
     color
 )
+# It looks like the code is attempting to define a variable named `player_contro`, but it seems
+# to be incomplete or incorrect as it ends with `
 
 AXIS_X = 'x'
 AXIS_Z = 'z'
@@ -29,7 +31,7 @@ class PlayerController(Entity):
     def __init__(
         self,
         speed: float = 10,
-        collider_size: Vec3 = Vec3(0.99, 2, 0.99),
+        collider_size: Vec3 = Vec3(0.50, 2, 0.50),
         eye_height: float = 1.6,
         fov: float = 100,
         mouse_sensitivity: Vec2 = Vec2(40, 40),
