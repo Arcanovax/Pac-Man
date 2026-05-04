@@ -118,10 +118,10 @@ class MazeGameSession(Entity):
         width = self.size[0]
         height = self.size[1]
         raw_corners = [
-            (0, 0),
-            (0, -height + 1),
-            (width - 1, 0),
-            (width - 1, -height + 1),
+            (1, 0),
+            (0, -height + 2),
+            (width - 2, 0),
+            (width - 2, -height + 1),
         ]
 
         chosen: list[tuple[int, int]] = []
