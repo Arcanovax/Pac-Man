@@ -9,7 +9,7 @@
 
         { "name": "medium1", "width": 10, "height": 10, "level_max_time": 120, "pacgum": 15},
 		{ "name": "medium2", "width": 20, "height": 10, "level_max_time": 240, "pacgum": 20},
-		{ "name": "medium2", "width": 10, "height": 20, "level_max_time": 240, "pacgum": 30},
+		{ "name": "medium3", "width": 10, "height": 20, "level_max_time": 240, "pacgum": 30},
 
 		{ "name": "hard1", "width": 15, "height": 20, "level_max_time": 240, "pacgum": 35},
 		{ "name": "hard2", "width": 20, "height": 15, "level_max_time": 240, "pacgum": 40},
