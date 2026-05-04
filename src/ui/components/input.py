@@ -1,4 +1,5 @@
 from ursina import InputField, Entity, Text, color as colors, time
+from typing import cast
 
 
 class MenuInput(InputField):
@@ -163,14 +164,17 @@ class MenuInput(InputField):
 
     def update(self) -> None:
         """Update cursor blink and clamp cursor position to input width."""
-        if (len(self.text) >= self.character_limit):
+        current_text = cast(str, getattr(self, "text", "") or "")
+
+        if (len(current_text) >= self.character_limit):
             self._cursor.enabled = False
         else:
             self._cursor.enabled = True
+
         if (
             self.active
             and self._cursor.enabled
-            and len(self.text) < self.character_limit
+            and len(current_text) < self.character_limit
         ):
             self._cursor_blink_time += time.dt
             if self._cursor_blink_time >= 0.5:
@@ -178,9 +182,24 @@ class MenuInput(InputField):
                 self._cursor.alpha = 1.0 if self._cursor_visible else 0.0
                 self._cursor_blink_time = 0
 
-            text_width = len(self.text) * 0.041
+            text_width = len(current_text) * 0.041
             cursor_x = self._left_padding + text_width + 0.02
             self._cursor.x = min(cursor_x, self._right_padding)
+
+        allowed = (
+            "abcdefghijklmnopqrstuvwxyz"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            " 0123456789"
+        )
+        joins = "".join(c for c in current_text if c in allowed)
+        if len(joins) > self.character_limit:
+            joins = joins[: self.character_limit]
+        if joins != current_text:
+            self.text = joins
+            try:
+                self.text_field.text = joins
+            except Exception:
+                pass
 
     def on_mouse_enter(self) -> None:
         """Visual hint when mouse hovers over the input field."""
