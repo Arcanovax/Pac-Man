@@ -56,11 +56,11 @@ The game is using the file `config.json` to store the data of the maps.
 If invalid or missing keys are provided, the game clamps to safe default values without crashing.
 
 ## 4. Highscore System
-Player highscores are stored persistently in a local JSON file (`highscore.json`). 
+Player highscores are stored persistently in a local JSON file (`highscore.json`).
 Loaded at startup, it accepts non-negative scores and player names (max 10 alphanumeric characters). At the end of a game, players are prompted to save their score, which is inserted and sorted securely.
 
 ## 5. Maze Generation
-We integrate the external `A-Maze-ing` package (`mazegenerator-2.0.1` in the `dependencies/` folder) without modifying its source. 
+We integrate the external `A-Maze-ing` package (`mazegenerator-2.0.1` in the `dependencies/` folder) without modifying its source.
 The package's interface is called dynamically to build the grid. We use the parameter `PERFECT=False` to ensure the generated maze includes loops and interconnected corridors, representing a true Pac-Man experience rather than a strict dead-end maze. The first level utilizes the seed provided in the configuration, while later levels are generated dynamically.
 
 ## 6. Implementation
@@ -85,14 +85,14 @@ graph TD
 
     %% Nodes
     Main["main.py<br/>Application Entry Point"]:::entry
-    
+
     Config[("config.json<br/>Game Configuration")]:::data
     Highscores[("highscore.json<br/>Persistent Data")]:::data
-    
+
     Parsing["src/parsing/<br/>Config Loader"]:::logic
     Render["src/render/<br/>Game Loop, 3D Render & Minimap"]:::logic
     UI["src/ui/<br/>HUD, Menus & Shaders Effect"]:::logic
-    
+
     Logger["src/logger/<br/>Console Output Formatting"]:::util
     MazeGen["mazegenerator<br/>(External Package)"]:::util
     Player_Controller["src/render/<br/>Player Controller, and Player Stats "]:::logic
@@ -100,11 +100,11 @@ graph TD
 
     Main -->|loads via| Parsing
     Parsing -->|reads| Config
-    
+
     UI -->|starts| Render
     Main -->|delegates to| UI
     Main -->|uses| Logger
-    
+
     UI -->|reads| Highscores
     MazeGen -->|save| Highscores
     Render -->|generates grid| MazeGen
@@ -122,18 +122,21 @@ timeline
         section First Week
           mthetcha : 3d render of the maze
           sgil--de : Parsing
-                   : IU of all menus 
+                   : IU of all menus
                    : Player controller
         section Second Week
           mthetcha : Minimap
                    : Pacgums
           sgil--de : Menu system
                    : Highscores system
+				   : HUD system
         section Third Week
           mthetcha : Cheat Menu
                    : 3D modelling the ghosts
+				   : System of levels
           sgil--de : How ghosts work
-                   : System of levels
+		  		   : Improve the config file
+
 ```
 
 ## 9. Resources
