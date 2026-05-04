@@ -20,6 +20,7 @@ from .pacgums import Pacgums_Manager
 from ..parsing.model import ConfigModel
 from ..ghosts.ghost import (
     STATE_EATEN,
+    STATE_FRIGHTENED,
     Blinky,
     Clyde,
     Inky,
@@ -466,7 +467,12 @@ class MazeGameSession(Entity):
             if not in_same_cell and not close_in_world:
                 continue
 
-            if power_mode_active:
+            can_eat_ghost = (
+                infinite_eat_active
+                or ghost.state == STATE_FRIGHTENED
+            )
+
+            if power_mode_active and can_eat_ghost:
                 ghost.on_eaten(respawn_delay=3.0)
                 self.score += int(self.config.points_per_ghost)
                 self.hud.set_score(self.score)
