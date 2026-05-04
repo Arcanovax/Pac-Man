@@ -32,7 +32,6 @@ def main() -> None:
 
     Logger.debug(str(config))
 
-    print(config)
     try:
         run_main_menu(config)
     except AttributeError:
