@@ -108,7 +108,6 @@ class ConfigModel(BaseModel):
     points_per_ghost: int = Field(gt=0, default=200)
     seed: int = Field(default=42)
     highscore: list[dict[str, int | str]] = Field(default=[])
-    mouse_sensitivity: float = Field(default=80.0)
     fov: float = Field(default=90.0)
 
     def __str__(self) -> str:
@@ -177,7 +176,6 @@ class ConfigModel(BaseModel):
         return v
 
     @field_validator(
-        "mouse_sensitivity",
         "fov",
         mode="before"
     )
@@ -186,7 +184,6 @@ class ConfigModel(BaseModel):
         field_name = info.field_name
         limit = {
             "fov": (50.0, 120.0),
-            "mouse_sensitivity": (20.0, 80.0),
         }
 
         try:
