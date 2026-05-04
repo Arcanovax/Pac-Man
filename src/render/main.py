@@ -32,7 +32,7 @@ from ..ui.menu.pause_menu import PauseMenuManager
 from typing import Any, Callable
 
 
-class MazeGameSession(Entity):  # type: ignore
+class MazeGameSession(Entity):
     """Represents a single session of the 3D maze game.
 
     Manages the game loop, entities (player, ghosts, pacgums), scoring,

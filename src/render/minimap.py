@@ -2,7 +2,7 @@ from ursina import Entity, camera, color, duplicate
 from .maze_3d import Maze_3d
 
 
-class MiniMap(Entity):  # type: ignore
+class MiniMap(Entity):
     """In-game Minimap UI element overlay.
 
     Renders a scaled-down version of the 3D level walls and tracks the player

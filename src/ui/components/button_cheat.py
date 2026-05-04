@@ -4,7 +4,7 @@ from ursina import Button, Text, color, Entity
 font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
 
-class button_cheat(Button):  # type: ignore
+class button_cheat(Button):
     """Custom button for cheat visual.
     Args:
         Button: Button from ursina

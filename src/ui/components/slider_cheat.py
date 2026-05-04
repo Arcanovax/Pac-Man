@@ -4,7 +4,7 @@ from typing import Callable, Any
 font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
 
-class slider_cheat(Slider):  # type: ignore
+class slider_cheat(Slider):
     """Custom slider button for cheat visual.
     Args:
         Slider: Slider from ursina

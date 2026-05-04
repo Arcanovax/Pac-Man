@@ -130,7 +130,7 @@ class MenuInput(InputField):
         self._cursor_blink_time = 0
         self._cursor_visible = True
 
-    def input(self, key) -> None:
+    def input(self, key: str) -> None:
         """Process input events and manage active styling.
 
         Activates the input when clicked or tabbed into and deactivates

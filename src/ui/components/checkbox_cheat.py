@@ -5,7 +5,6 @@ font_path = "assets/fonts/PressStart2P-vaV7.ttf"
 
 
 class checkbox_cheat(Button):
-    # type: ignore
     """Custom checkbox for cheat visual.
     Args:
         Button: Button from ursina

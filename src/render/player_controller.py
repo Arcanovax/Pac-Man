@@ -20,7 +20,7 @@ AXIS_X = 'x'
 AXIS_Z = 'z'
 
 
-class PlayerController(Entity):  # type: ignore
+class PlayerController(Entity):
     """First-person player controller used in the 3D maze.
 
     Handles movement, mouse look, collision detection with raycasts,
