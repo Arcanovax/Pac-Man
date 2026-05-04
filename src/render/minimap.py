@@ -14,7 +14,8 @@ class MiniMap(Entity):
 
         Args:
             maze_3d: The underlying 3D maze representation to duplicate.
-            map_scale: Value used to calculate the relative scaling inside the UI.
+            map_scale: Value used to calculate
+                the relative scaling inside the UI.
         """
         super().__init__(parent=camera.ui)
         self.map_scale = map_scale

@@ -30,7 +30,8 @@ class Pacgums_Manager():
             pacgums_zone: Coordinates of all valid cells for spawning pacgums.
             minimap: UI minimap reference to draw pacgums icons.
             size: Width and Height of the level maze grid.
-            current_level: Index of the current level to retrieve config details.
+            current_level: Index of the current
+                level to retrieve config details.
         """
         self.width = size[0]
         self.height = size[1]
@@ -56,7 +57,8 @@ class Pacgums_Manager():
         """Instantiates a single super pacgum object in the map.
 
         Args:
-            pos: 3D vector representing its localized coordinates across the grid.
+            pos: 3D vector representing its
+                localized coordinates across the grid.
         """
         type = Pacgum_Type.super
         self.pacgums[type.value].append(Pacgum(self, pos, type))
@@ -77,7 +79,8 @@ class Pacgum:
     """Individual pacgum element that can be consumed by the player."""
     def __init__(self, manager: Pacgums_Manager,
                  position: Vec3, type_gum: Pacgum_Type) -> None:
-        """Initializes a new pacgum entity in both the 3D scene and the UI minimap.
+        """Initializes a new pacgum entity in both
+            the 3D scene and the UI minimap.
 
         Args:
             manager: Reference to the centralized Pacgums_Manager running.

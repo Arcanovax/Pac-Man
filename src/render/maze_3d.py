@@ -43,7 +43,8 @@ class Maze_3d():
             val: The integer value of the cell.
 
         Returns:
-            A dictionary containing boolean flags for walls (NORTH, EAST, SOUTH, WEST)
+            A dictionary containing boolean flags for walls
+                (NORTH, EAST, SOUTH, WEST)
             and the original integer value.
         """
         bits = f"{int(val):04b}"
@@ -121,7 +122,8 @@ class Maze_3d():
         )
 
     def create_walls(self, x: int, y: int) -> None:
-        """Parses a specific coordinate and generates needed walls based on neighbors.
+        """Parses a specific coordinate and
+            generates needed walls based on neighbors.
 
         Args:
             x: Default X-coordinate of a node.
