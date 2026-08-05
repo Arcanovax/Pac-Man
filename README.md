@@ -5,6 +5,18 @@
 ## 1. Description
 A modern Python and 3D recreation of the classic arcade game Pac-Man. This project implements a fully playable game featuring procedurally generated mazes, classic ghost AI behaviors and a persistent highscore tracking.
 
+![GIF](images/game.gif)
+<br>
+
+The game includes a cheat menu:
+
+![IMG](images/cheat-menu.png)
+<br>
+
+Here's an overview of the cheats available during the game
+
+![IMG](images/cheat.gif)
+
 ## 2. Instructions
 
 ### Installation
